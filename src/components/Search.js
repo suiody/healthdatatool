@@ -8,11 +8,12 @@ class Search extends Component {
   constructor(props) {
    super(props)
    this.state = {
-     countries: [],
-     years: [],
-     indicators: [],
-     characteristics: [],
-     arrData: {}
+     countries: [], // array of countries to populate dropdown menu
+     years: [], // array of suvey years to populate dropdown menu
+     indicators: [], // array of suvey years to populate dropdown menu
+     selectedCountry: [], // keeps track of current country when selected from dropdown
+     selectedYear: [], // keeps track of current year selected from dropdown
+     selectedIndicator: [] // keeps track of current indicator selected from dropdown
    }
  }
 
@@ -52,48 +53,23 @@ class Search extends Component {
     });
  }
 
+ handleCountry(e){
+   console.log(e.target.value);
+   this.setState({selectedCountry: e.target.value});
 
-// This should be called onChange, when the user makes a selection from drop down
-getCharacteristics(){
-    axios.get('https://api.dhsprogram.com/rest/dhs')
-    .then(response => {
-      this.setState({
-        characteristics: response.data.Data
-      });
-    });
-  }
-  // not every indicator will have a characteristic category, so if not, create it.
-  let characteristics = this.state.characteristics;
-  let arrData = {};
+ }
 
- this.state.characteristics.map((value, index) => {
-   if(!arrData[value.CharacteristicCategory]) {
-       arrData[value.CharacteristicCategory] = {};
-       arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
-       arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-   }
-   else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel])
-   {
-       arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
-       arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-   }
-   else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel])
-   {
-       if(value.ByVariableLabel.length > 0)
-       {
-           arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-       }
-   }
-   else
-   {
-       if(value.ByVariableLabel.length > 0)
-       {
-           arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-       }
-   }
- })
-}
+ handleYear(e){
+   console.log(e.target.value);
+   this.setState({selectedYear: e.target.value});
 
+ }
+
+ handleIndicator(e){
+   console.log(e.target.value);
+   this.setState({selectedIndicator: e.target.value});
+
+ }
 
   render(){
     let countries = this.state.countries;
@@ -106,24 +82,23 @@ getCharacteristics(){
       <option key={year.SurveyId}>{year.SurveyYearLabel}</option>
   );
 
-  let indicators = this.state.indicators;
-  let indicatorItems = indicators.map((ind) =>
-    <option key={ind.IndicatorId}>{ind.Label}</option>
-);
-
+    let indicators = this.state.indicators;
+    let indicatorItems = indicators.map((ind) =>
+      <option key={ind.IndicatorId}>{ind.Label}</option>
+  );
 
     return (
    <div>
        <p>Countries: </p>
-       <select className="dropDown">
+       <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
           {countryItems}
        </select>
        <p>Survey Years: </p>
-       <select className="dropDown">
+       <select className="dropDown" onChange={(e) => this.handleYear(e)}>
           {yearItems}
        </select>
        <p>Indicators: </p>
-       <select className="dropDown">
+       <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
           {indicatorItems}
        </select>
        </div>
