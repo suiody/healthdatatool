@@ -15,12 +15,7 @@ class Search extends Component {
  }
 
  componentDidMount() {
-  this.getCountries();
-  this.getSurveyYears();
-  this.getIndicators();
- }
-
- getCountries(){
+   // fetch the country data, it will be returned as json by default
    axios.get('https://api.dhsprogram.com/rest/dhs/countries')
    .then(response => {
      console.log(response.data.Data[0])
@@ -28,9 +23,7 @@ class Search extends Component {
        countries: response.data.Data
      });
    });
- }
 
- getSurveyYears(){
    axios.get('https://api.dhsprogram.com/rest/dhs/surveys')
    .then(response => {
      console.log(response.data.Data[0])
@@ -38,16 +31,15 @@ class Search extends Component {
        years: response.data.Data
      });
    });
- }
 
- getIndicators(){
-      axios.get('https://api.dhsprogram.com/rest/dhs/indicators')
-      .then(response => {
-        console.log(response.data.Data[0])
-        this.setState({
-          indicators: response.data.Data
-        });
-      });
+   axios.get('https://api.dhsprogram.com/rest/dhs/indicators')
+   .then(response => {
+     console.log(response.data.Data[0])
+     this.setState({
+       indicators: response.data.Data
+     });
+   });
+
  }
 
   render(){
@@ -61,10 +53,7 @@ class Search extends Component {
       <option key={year.SurveyId}>{year.SurveyYearLabel}</option>
   );
 
-  let indicators = this.state.indicators;
-  let indicatorItems = indicators.map((ind) =>
-    <option key={ind.IndicatorId}>{ind.Label}</option>
-);
+
     return (
    <div>
            <select>
@@ -72,9 +61,6 @@ class Search extends Component {
            </select>
            <select>
               {yearItems}
-           </select>
-           <select>
-              {indicatorItems}
            </select>
        </div>
 
