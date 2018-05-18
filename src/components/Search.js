@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-// import { Link } from 'react-router-dom';
 import axios from 'axios';
+// import Highcharts from 'highcharts';
 
 
 class Search extends Component {
@@ -68,6 +68,76 @@ class Search extends Component {
  handleIndicator(e){
    console.log(e.target.value);
    this.setState({selectedIndicator: e.target.value});
+ }
+
+ makeGraph(){
+   var strCountry = this.state.selectedCountry;
+   var strSurveyYear = this.state.selectedYear;
+   var strIndicator = this.state.selectedIndicator;
+   var arrData = {};
+
+   //Create URL to obtain data.
+   var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/";
+   var apiURL = gAPIDomain +
+                   "data?countryIds=" + strCountry +
+                   "&surveyIds=" + strSurveyYear +
+                   "&indicatorIds=" + strIndicator +
+                   "&f=json&perpage=100&breakdown=all";
+   console.log(apiURL);
+   //Reset the Array.
+   arrData = undefined;
+   arrData = {};
+   //Obtain data.
+   axios.get(apiURL)
+   .then(response => {
+     var currData = response.data.Data
+   });
+       //Create the data tree from data obtained via query.
+    currData.map((index,value) => {
+           //If the characteristics Category does not exist, create it.
+           if(!arrData[value.CharacteristicCategory]) {
+               arrData[value.CharacteristicCategory] = {};
+               arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
+               arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
+           }
+           else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel])
+           {
+               arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
+               arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
+           }
+           else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel])
+           {
+               if(value.ByVariableLabel.length > 0)
+               {
+                   arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
+               }
+           }
+           else
+           {
+               if(value.ByVariableLabel.length > 0)
+               {
+                   arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
+               }
+           }
+       });
+//left off here...need to translate into jsx..
+
+
+ //       //The data has been obtained, populate the Characteristics Group drop down.
+ //           //Clear the list before you update it.
+ //       listCharGroups.find('option').remove();
+ //       $.each(arrData, function(key, value) {
+ //           listCharGroups.append($("<option />").val(key).text(key));
+ //       });
+ //       listCharGroups.change();    //Force call on change for the first time to populate chart.
+ //   });
+ // });
+
+
+
+
+
+
 
  }
 
@@ -101,8 +171,11 @@ class Search extends Component {
        <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
           {indicatorItems}
        </select>
-       </div>
 
+       <button onClick={this.makeGraph()}>
+         Graph
+       </button>
+       </div>
     );
   }
 
