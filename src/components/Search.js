@@ -13,7 +13,8 @@ class Search extends Component {
      indicators: [], // array of suvey years to populate dropdown menu
      selectedCountry: [], // keeps track of current country when selected from dropdown
      selectedYear: [], // keeps track of current year selected from dropdown
-     selectedIndicator: [] // keeps track of current indicator selected from dropdown
+     selectedIndicator: [] // keeps track of current indicator selected from dropdown,
+     plotData: [] // selected datato plot
    }
  }
 
@@ -70,7 +71,7 @@ class Search extends Component {
    this.setState({selectedIndicator: e.target.value});
  }
 
- makeGraph(){
+ getGraphData(){
    var strCountry = this.state.selectedCountry;
    var strSurveyYear = this.state.selectedYear;
    var strIndicator = this.state.selectedIndicator;
@@ -90,10 +91,16 @@ class Search extends Component {
    //Obtain data.
    axios.get(apiURL)
    .then(response => {
-     var currData = response.data.Data
+     console.log(response.data.Data[0])
+     this.setState({
+       plotData: response.data.Data
+     });
    });
+ }
+
+ plotGraph(){
        //Create the data tree from data obtained via query.
-    currData.map((index,value) => {
+    plotData.map((index,value) => {
            //If the characteristics Category does not exist, create it.
            if(!arrData[value.CharacteristicCategory]) {
                arrData[value.CharacteristicCategory] = {};
@@ -120,24 +127,7 @@ class Search extends Component {
                }
            }
        });
-//left off here...need to translate into jsx..
-
-
- //       //The data has been obtained, populate the Characteristics Group drop down.
- //           //Clear the list before you update it.
- //       listCharGroups.find('option').remove();
- //       $.each(arrData, function(key, value) {
- //           listCharGroups.append($("<option />").val(key).text(key));
- //       });
- //       listCharGroups.change();    //Force call on change for the first time to populate chart.
- //   });
- // });
-
-
-
-
-
-
+    }   
 
  }
 
