@@ -14,7 +14,7 @@ class Search extends Component {
      selectedCountry: [], // keeps track of current country when selected from dropdown
      selectedYear: [], // keeps track of current year selected from dropdown
      selectedIndicator: [] // keeps track of current indicator selected from dropdown,
-     plotData: [] // selected datato plot
+     arrData: [] // selected datato plot
    }
  }
 
@@ -75,7 +75,7 @@ class Search extends Component {
    var strCountry = this.state.selectedCountry;
    var strSurveyYear = this.state.selectedYear;
    var strIndicator = this.state.selectedIndicator;
-   var arrData = {};
+
 
    //Create URL to obtain data.
    var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/";
@@ -85,15 +85,13 @@ class Search extends Component {
                    "&indicatorIds=" + strIndicator +
                    "&f=json&perpage=100&breakdown=all";
    console.log(apiURL);
-   //Reset the Array.
-   arrData = undefined;
-   arrData = {};
+
    //Obtain data.
    axios.get(apiURL)
    .then(response => {
      console.log(response.data.Data[0])
      this.setState({
-       plotData: response.data.Data
+       arrData: response.data.Data
      });
    });
  }
@@ -127,7 +125,7 @@ class Search extends Component {
                }
            }
        });
-    }   
+    }
 
  }
 
@@ -162,7 +160,7 @@ class Search extends Component {
           {indicatorItems}
        </select>
 
-       <button onClick={this.makeGraph()}>
+       <button onClick={this.getGraphData()}>
          Graph
        </button>
        </div>
