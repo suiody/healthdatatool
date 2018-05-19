@@ -5,6 +5,9 @@ import Data from './Data';
 // import Highcharts from 'highcharts';
 
 
+// Brute force approach for now, will update this so it's working with a database and/or
+// cloud so that populating menus from API is not so slow....
+
 class Search extends Component {
 
   constructor(props) {
@@ -186,7 +189,7 @@ populateCharacteristics(){
           {indicatorItems}
        </select>
        <p className="searchTitles">Characteristics: </p>
-
+      // Need to update this...
 
 
        <div>
