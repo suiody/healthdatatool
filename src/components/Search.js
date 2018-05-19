@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './Search.css';
 // import Highcharts from 'highcharts';
 
 
@@ -8,16 +9,18 @@ class Search extends Component {
   constructor(props) {
    super(props)
    this.state = {
-     countries: [], // array of countries to populate dropdown menu
-     years: [], // array of suvey years to populate dropdown menu
-     indicators: [], // array of suvey years to populate dropdown menu
-     selectedCountry: [], // keeps track of current country when selected from dropdown
-     selectedYear: [], // keeps track of current year selected from dropdown
-     selectedIndicator: [] // keeps track of current indicator selected from dropdown,
-     arrData: [] // selected datato plot
+     countries: [], //  countries to populate dropdown menu
+     years: [], // suvey years to populate dropdown menu
+     indicators: [], // indicators to populate dropdown menu
+     selectedCountry: [], // current country selected from dropdown
+     selectedYear: [], // current year selected from dropdown
+     selectedIndicator: [], //current indicator selected from dropdown,
+     arrData: {}, // holds selected query results
+     characteristics: [] // holds characteristic groups for the selected indicator
    }
  }
 
+// when the program loads, make the API call to get data to populate dropdown menu
  componentDidMount() {
   this.getCountries();
   this.getSurveyYears();
@@ -54,29 +57,30 @@ class Search extends Component {
     });
  }
 
+// store the selected country from dropdown menu in state
  handleCountry(e){
    console.log(e.target.value);
    this.setState({selectedCountry: e.target.value});
 
  }
 
+// store the selected year from dropdown menu in state
  handleYear(e){
    console.log(e.target.value);
    this.setState({selectedYear: e.target.value});
 
  }
-
+// store the selected indicator from dropdown menu in state
  handleIndicator(e){
    console.log(e.target.value);
    this.setState({selectedIndicator: e.target.value});
  }
 
+// build the query based on user's selection to obtain the data
  getGraphData(){
    var strCountry = this.state.selectedCountry;
    var strSurveyYear = this.state.selectedYear;
    var strIndicator = this.state.selectedIndicator;
-
-
    //Create URL to obtain data.
    var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/";
    var apiURL = gAPIDomain +
@@ -85,49 +89,49 @@ class Search extends Component {
                    "&indicatorIds=" + strIndicator +
                    "&f=json&perpage=100&breakdown=all";
    console.log(apiURL);
-
    //Obtain data.
    axios.get(apiURL)
    .then(response => {
+     console.log("get Graph Data");
      console.log(response.data.Data[0])
      this.setState({
        arrData: response.data.Data
      });
    });
+   this.getCharacteristicGroups();
  }
 
- plotGraph(){
-       //Create the data tree from data obtained via query.
-    plotData.map((index,value) => {
-           //If the characteristics Category does not exist, create it.
-           if(!arrData[value.CharacteristicCategory]) {
-               arrData[value.CharacteristicCategory] = {};
-               arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
-               arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-           }
-           else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel])
-           {
-               arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
-               arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-           }
-           else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel])
-           {
-               if(value.ByVariableLabel.length > 0)
-               {
-                   arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-               }
-           }
-           else
-           {
-               if(value.ByVariableLabel.length > 0)
-               {
-                   arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-               }
-           }
-       });
-    }
+// populate the characteristic groups
+ getCharacteristicGroups(){
+   var arrData = this.state.arrData;
+   arrData.forEach(function(value) {
+     console.log(`${value.CharacteristicCategory}, ${value.Value}`);
+     if(!arrData[value.CharacteristicCategory]){
+        arrData[value.CharacteristicCategory] = {};
+        arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
+        arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
+     } else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel]){
+       arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
+       arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
+     }else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel]){
+         if(value.ByVariableLabel.length > 0){
+           arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value; }
+       } else {
+         if(value.ByVariableLabel.length > 0){
+         arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value; }
+       }
 
- }
+   });
+  // populate the characteristics menu from the selected indicator
+    var listCharGroups = [];
+    arrData.forEach(function(obj) {
+      console.log(`${Object.keys(obj)}`);
+      listCharGroups.push(Object.keys(obj));
+    });
+    const listCharGroupsWithIds = listCharGroups.map((item, index) =>
+    {...item, id: index });
+    this.setState({characteristics: listCharGroupsWithIds});
+}
 
   render(){
     let countries = this.state.countries;
@@ -145,24 +149,37 @@ class Search extends Component {
       <option key={ind.IndicatorId}>{ind.Label}</option>
   );
 
+ // may need to add a unique identifier for this data
+   let characeristics = this.state.characteristics;
+   let charItems = characteristics.map((char) =>
+     <option key={char.id}>{char}</option>
+  );
+
+
     return (
-   <div>
-       <p>Countries: </p>
+   <div className="container-fluid">
+       <p className="searchTitles">Countries: </p>
        <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
           {countryItems}
        </select>
-       <p>Survey Years: </p>
+       <p className="searchTitles">Survey Years: </p>
        <select className="dropDown" onChange={(e) => this.handleYear(e)}>
           {yearItems}
        </select>
-       <p>Indicators: </p>
+       <p className="searchTitles">Indicators: </p>
        <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
           {indicatorItems}
        </select>
 
-       <button onClick={this.getGraphData()}>
-         Graph
-       </button>
+       <select className="dropDown" onChange={(e) => this.handleCharacteristics(e)}>
+          {characteristicItems}
+       </select>
+
+       <div>
+         <button className="graphButton" onClick={this.getGraphData()}>
+           Graph
+         </button>
+       </div>
        </div>
     );
   }
