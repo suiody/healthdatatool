@@ -17,9 +17,9 @@ class Search extends Component {
      selectedIndicator: [], //current indicator selected from dropdown,
      arrData: {}, // holds selected query results
      characteristics: [] // holds characteristic groups for the selected indicator
-     this.keyCount = 0;
-     this.getKey = this.getKey.bind(this);
    }
+   this.keyCount = 0;
+   this.getKey = this.getKey.bind(this);
  }
 
 // when the program loads, make the API call to get data to populate dropdown menu
