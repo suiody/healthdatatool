@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './Search.css';
+import Data from './Data';
 // import Highcharts from 'highcharts';
 
 
@@ -28,6 +29,10 @@ class Search extends Component {
   this.getCountries();
   this.getSurveyYears();
   this.getIndicators();
+ }
+
+ componentWillUpdate(){
+   this.getCharacteristicGroups();
  }
 
  getKey(){
@@ -81,6 +86,7 @@ class Search extends Component {
  handleIndicator(e){
    console.log(e.target.value);
    this.setState({selectedIndicator: e.target.value});
+   this.populateCharacteristics();
  }
 
  handleCharacteristics(e){
@@ -116,8 +122,7 @@ class Search extends Component {
 // populate the characteristic groups
  getCharacteristicGroups(){
    var arrData = this.state.arrData;
-   arrData.forEach(function(value) {
-     console.log(`${value.CharacteristicCategory}, ${value.Value}`);
+   [arrData].forEach(function(value) {
      if(!arrData[value.CharacteristicCategory]){
         arrData[value.CharacteristicCategory] = {};
         arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
@@ -136,9 +141,17 @@ class Search extends Component {
    });
   // populate the characteristics menu from the selected indicator
     var listCharGroups = Object.keys(arrData);
-    console.log(`${listCharGroups}`);
     this.setState({characteristics: listCharGroups});
+    this.populateCharacteristics();
 }
+
+populateCharacteristics(){
+  let characteristics = this.state.characteristics;
+  let charItems = characteristics.map((char) =>
+    <option key={this.getKey()}>{char}</option>
+ );
+}
+
 
   render(){
     let countries = this.state.countries;
@@ -156,11 +169,6 @@ class Search extends Component {
       <option key={ind.IndicatorId}>{ind.Label}</option>
   );
 
-  // may need to address "refresh" for this in dropdown menu, but does track proper item in state...
-  let characteristics = this.state.characteristics;
-  let charItems = characteristics.map((char) =>
-    <option key={this.getKey()}>{char}</option>
- );
 
 
     return (
@@ -177,10 +185,9 @@ class Search extends Component {
        <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
           {indicatorItems}
        </select>
-       <p className="searchTitles">Categories: </p>
-       <select className="dropDown" onChange={(e) => this.handleCharacteristics(e)}>
-          {charItems}
-       </select>
+       <p className="searchTitles">Characteristics: </p>
+
+
 
        <div>
          <button className="graphButton" onClick={this.getGraphData()}>
