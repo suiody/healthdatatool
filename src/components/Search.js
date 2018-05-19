@@ -17,6 +17,8 @@ class Search extends Component {
      selectedIndicator: [], //current indicator selected from dropdown,
      arrData: {}, // holds selected query results
      characteristics: [] // holds characteristic groups for the selected indicator
+     this.keyCount = 0;
+     this.getKey = this.getKey.bind(this);
    }
  }
 
@@ -26,6 +28,10 @@ class Search extends Component {
   this.getSurveyYears();
   this.getIndicators();
  }
+
+ getKey(){
+    return this.keyCount++;
+}
 
  getCountries(){
    axios.get('https://api.dhsprogram.com/rest/dhs/countries')
@@ -128,9 +134,7 @@ class Search extends Component {
       console.log(`${Object.keys(obj)}`);
       listCharGroups.push(Object.keys(obj));
     });
-    const listCharGroupsWithIds = listCharGroups.map((item, index) =>
-    {...item, id: index });
-    this.setState({characteristics: listCharGroupsWithIds});
+    this.setState({characteristics: listCharGroups});
 }
 
   render(){
@@ -152,7 +156,7 @@ class Search extends Component {
  // may need to add a unique identifier for this data
    let characeristics = this.state.characteristics;
    let charItems = characteristics.map((char) =>
-     <option key={char.id}>{char}</option>
+     <option key={this.getKey()}>{char}</option>
   );
 
 
