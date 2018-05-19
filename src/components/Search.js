@@ -16,7 +16,8 @@ class Search extends Component {
      selectedYear: [], // current year selected from dropdown
      selectedIndicator: [], //current indicator selected from dropdown,
      arrData: {}, // holds selected query results
-     characteristics: [] // holds characteristic groups for the selected indicator
+     characteristics: [], // holds characteristic groups for the selected indicator,
+     selectedCharacteristic: [] // selected characteristic
    }
    this.keyCount = 0;
    this.getKey = this.getKey.bind(this);
@@ -82,6 +83,11 @@ class Search extends Component {
    this.setState({selectedIndicator: e.target.value});
  }
 
+ handleCharacteristics(e){
+  console.log(e.target.value);
+  this.setState({selectedCharacteristic: e.target.value});
+}
+
 // build the query based on user's selection to obtain the data
  getGraphData(){
    var strCountry = this.state.selectedCountry;
@@ -129,11 +135,8 @@ class Search extends Component {
 
    });
   // populate the characteristics menu from the selected indicator
-    var listCharGroups = [];
-    arrData.forEach(function(obj) {
-      console.log(`${Object.keys(obj)}`);
-      listCharGroups.push(Object.keys(obj));
-    });
+    var listCharGroups = Object.keys(arrData);
+    console.log(`${listCharGroups}`);
     this.setState({characteristics: listCharGroups});
 }
 
@@ -153,11 +156,11 @@ class Search extends Component {
       <option key={ind.IndicatorId}>{ind.Label}</option>
   );
 
- // may need to add a unique identifier for this data
-   let characeristics = this.state.characteristics;
-   let charItems = characteristics.map((char) =>
-     <option key={this.getKey()}>{char}</option>
-  );
+  // may need to address "refresh" for this in dropdown menu, but does track proper item in state...
+  let characteristics = this.state.characteristics;
+  let charItems = characteristics.map((char) =>
+    <option key={this.getKey()}>{char}</option>
+ );
 
 
     return (
@@ -174,9 +177,9 @@ class Search extends Component {
        <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
           {indicatorItems}
        </select>
-
+       <p className="searchTitles">Categories: </p>
        <select className="dropDown" onChange={(e) => this.handleCharacteristics(e)}>
-          {characteristicItems}
+          {charItems}
        </select>
 
        <div>
