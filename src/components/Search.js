@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './Search.css';
-import Countries from './Countries';
-import Years from './Years';
+import Countries from './../data/Countries';
+import Years from './../data/Years';
 // import Highcharts from 'highcharts';
 
 class Search extends Component {
