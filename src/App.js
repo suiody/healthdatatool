@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import { Route, Router, BrowserRouter } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import Search from './components/Search';
+import WorldBank from './components/WorldBank';
 import './App.css';
 
 
@@ -17,6 +18,7 @@ class App extends Component {
 
         <main>
          <Route exact path='/' component={Search}/>
+         <Route exact path='/' component={WorldBank}/>
         </main>
       </div>
     );
