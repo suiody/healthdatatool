@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './Search.css';
-import Countries from './Countries';
-import Years from './Years';
+import Data from './Data';
 // import Highcharts from 'highcharts';
+
+
+// Brute force approach for now, will update this so it's working with a database and/or
+// cloud so that populating menus from API is not so slow....
 
 class Search extends Component {
 
@@ -31,28 +34,39 @@ class Search extends Component {
   this.getIndicators();
  }
 
+
  getKey(){
     return this.keyCount++;
 }
 
-// read countries from local file
  getCountries(){
-   var countries = Countries;
-   this.setState({countries: countries});
+   axios.get('https://api.dhsprogram.com/rest/dhs/countries')
+   .then(response => {
+     console.log("countries");
+     console.log(response.data.Data);
+     this.setState({
+       countries: response.data.Data
+     });
+   });
  }
 
-// read surveyYears from local file
  getSurveyYears(){
-   var surveyYears = Years;
-   this.setState({years: surveyYears});
+   axios.get('https://api.dhsprogram.com/rest/dhs/surveys')
+   .then(response => {
+      console.log("surveys");
+     console.log(response.data.Data)
+     this.setState({
+       years: response.data.Data
+     });
+   });
  }
 
-// query API for indicators, much larger file size
  getIndicators(){
     axios.get('https://api.dhsprogram.com/rest/dhs/indicators')
     .then(response => {
-      console.log("indicators");
-      console.log(response.data.Data[0])
+       console.log("indicators");
+      console.log(response.data.Data)
+
       this.setState({
         indicators: response.data.Data
       });
@@ -100,59 +114,64 @@ class Search extends Component {
    //Obtain data.
    axios.get(apiURL)
    .then(response => {
-     console.log("Graph Data");
+     console.log("get Graph Data");
      console.log(response.data.Data[0])
      this.setState({
        arrData: response.data.Data
      });
    });
+   // this.getCharacteristicGroups();
  }
 
 // populate the characteristic groups
- getCharacteristicGroups(){
-   var arrData = this.state.arrData;
-   [arrData].forEach(function(value) {
-     if(!arrData[value.CharacteristicCategory]){
-        arrData[value.CharacteristicCategory] = {};
-        arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
-        arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-     } else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel]){
-       arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
-       arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
-     }else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel]){
-         if(value.ByVariableLabel.length > 0){
-           arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value; }
-       } else {
-         if(value.ByVariableLabel.length > 0){
-         arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value; }
-       }
+//  getCharacteristicGroups(){
+//    var arrData = this.state.arrData;
+//    [arrData].forEach(function(value) {
+//      if(!arrData[value.CharacteristicCategory]){
+//         arrData[value.CharacteristicCategory] = {};
+//         arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
+//         arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
+//      } else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel]){
+//        arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
+//        arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value;
+//      }else if(!arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel]){
+//          if(value.ByVariableLabel.length > 0){
+//            arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value; }
+//        } else {
+//          if(value.ByVariableLabel.length > 0){
+//          arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value; }
+//        }
+//
+//    });
+//   // populate the characteristics menu from the selected indicator
+//     var listCharGroups = Object.keys(arrData);
+//     this.setState({characteristics: listCharGroups});
+//     this.populateCharacteristics();
+// }
 
-   });
-  // populate the characteristics menu from the selected indicator
-    var listCharGroups = Object.keys(arrData);
-    this.setState({characteristics: listCharGroups});
-    this.populateCharacteristics();
-}
+// populateCharacteristics(){
+//   let characteristics = this.state.characteristics;
+//   let charItems = characteristics.map((char) =>
+//     <option key={this.getKey()}>{char}</option>
+//  );
+// }
 
-populateCharacteristics(){
-  let characteristics = this.state.characteristics;
-  let charItems = characteristics.map((char) =>
-    <option key={this.getKey()}>{char}</option>
- );
-}
 
   render(){
     let countries = this.state.countries;
+
     let countryItems = countries.map((country) =>
       <option key={country.DHS_CountryCode}>{country.CountryName}</option>
   );
 
     let years = this.state.years;
+
     let yearItems = years.map((year) =>
       <option key={year.SurveyId}>{year.SurveyYearLabel}</option>
   );
 
     let indicators = this.state.indicators;
+
     let indicatorItems = indicators.map((ind) =>
       <option key={ind.IndicatorId}>{ind.Label}</option>
   );
