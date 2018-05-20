@@ -109,6 +109,7 @@ class Search extends Component {
  }
 
 // populate the characteristic groups
+// need to refactor so this does not get called until after indicator is selected...
  getCharacteristicGroups(){
    var arrData = this.state.arrData;
    [arrData].forEach(function(value) {
