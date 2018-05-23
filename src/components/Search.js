@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import './Search.css';
-import Countries from './../data/Countries';
-import Years from './../data/Years';
+
 // import Highcharts from 'highcharts';
+
+var axios = require('axios');
 
 class Search extends Component {
 
@@ -26,37 +26,65 @@ class Search extends Component {
 
 // when the program loads, make the API call to get data to populate dropdown menu
  componentDidMount() {
-  this.getCountries();
-  this.getSurveyYears();
-  this.getIndicators();
+  // this.getCountries();
+  // this.getSurveyYears();
+  // this.getIndicators();
+  this.getMenuData();
  }
 
  getKey(){
     return this.keyCount++;
 }
 
-// read countries from local file
+// query rails API for countries
  getCountries(){
-   var countries = Countries;
-   this.setState({countries: countries});
+   return axios.get('http://localhost:3001/api/v1/countries.json')
+   // .then(response => {
+   //   console.log("countries");
+   //   console.log(response.data)
+   //   this.setState({
+   //     countries: response.data
+   //   });
+   // });
  }
 
-// read surveyYears from local file
+// query rails API for surveyYears
  getSurveyYears(){
-   var surveyYears = Years;
-   this.setState({years: surveyYears});
+   return axios.get('http://localhost:3001/api/v1/surveys.json')
+   // .then(response => {
+   //   console.log("survey years");
+   //   console.log(response.data)
+   //   this.setState({
+   //     years: response.data
+   //   });
+   // });
  }
 
-// query API for indicators, much larger file size
+// query rails API for indicators
  getIndicators(){
-    axios.get('https://api.dhsprogram.com/rest/dhs/indicators')
-    .then(response => {
-      console.log("indicators");
-      console.log(response.data.Data[0])
-      this.setState({
-        indicators: response.data.Data
-      });
-    });
+    return axios.get('http://localhost:3001/api/v1/indicators.json')
+    // .then(response => {
+    //   console.log("indicators");
+    //   console.log(response.data)
+    //   this.setState({
+    //     indicators: response.data
+    //   });
+    // });
+ }
+
+getMenuData(){
+var countries;
+var years;
+var indicators;
+   return axios.all([this.getCountries(), this.getSurveyYears(),this.getIndicators()])
+     .then(function(arr){
+       return {
+         countries: arr[0].data,
+         years: arr[1].data,
+         indicators: arr[2].data
+       }
+     });
+   this.setState({countries: countries, years: years, indicators: indicators });
  }
 
 // store the selected country from dropdown menu in state

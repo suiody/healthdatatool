@@ -11,8 +11,8 @@ class WorldBank extends Component {
  }
 
  componentDidMount(){
-   this.getIndicators();
-   this.getTopics();
+   // this.getIndicators();
+   // this.getTopics();
  }
 
  getIndicators(){
