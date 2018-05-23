@@ -18,7 +18,10 @@ class Search extends Component {
      selectedIndicator: [], //current indicator selected from dropdown,
      arrData: {}, // holds selected query results
      characteristics: [], // holds characteristic groups for the selected indicator,
-     selectedCharacteristic: [] // selected characteristic
+     selectedCharacteristic: [], // selected characteristic
+     CountryId: '', // keeps track of the countryId for DHS query
+     SurveyId: '', // keeps track of surveyId for DHS query
+     IndicatorId: '' // keeps track of indicatorId for DHS query
    }
    this.keyCount = 0;
    this.getKey = this.getKey.bind(this);
@@ -83,44 +86,54 @@ class Search extends Component {
 
 // store the selected country from dropdown menu in state
  handleCountry(e){
-   console.log(e.target.value);
    this.setState({selectedCountry: e.target.value});
+   var selectedCountry = e.target.value;
+   // now retrieve the CountryId for the selected country from the countries array
+   var result = this.state.countries.filter((co) =>
+    co.CountryName === selectedCountry
+   );
+   var CountryId = result[0].DHS_CountryCode.toString();
+   this.setState({CountryId: CountryId});
+   console.log("CountryId", CountryId);
  }
 
+// works for handleCountry, need to figure out for handleYear and handleIndicator
 // store the selected year from dropdown menu in state
  handleYear(e){
-   console.log(e.target.value);
    this.setState({selectedYear: e.target.value});
+   // now retrieve the surveyId for the selected country from the years array
+   var selectedYear = e.target.value;
+
  }
+
 // store the selected indicator from dropdown menu in state
  handleIndicator(e){
-   console.log(e.target.value);
-   this.setState({selectedIndicator: e.target.value});
-   this.populateCharacteristics();
+   this.setState({selectedIndicator: e.target.value });
+   // now retrieve the IndicatorId for the selected country from the indicators array
+   var selectedIndicator = e.target.value;
+
  }
 
  handleCharacteristics(e){
-  console.log(e.target.value);
   this.setState({selectedCharacteristic: e.target.value});
 }
 
 // build the query based on user's selection to obtain the data
- async getGraphData(){
-   var strCountry = this.state.selectedCountry;
-   var strSurveyYear = this.state.selectedYear;
-   var strIndicator = this.state.selectedIndicator;
+ async getGraphData(e){
+   var strCountry = this.state.CountryId;
+   var strSurveyYear = this.state.SurveyId;
+   var strIndicator = this.state.IndicatorId;
    //Create URL to obtain data.
-  var baseURL = 'https://api.dhsprogram.com/rest/dhs/';
+   var baseURL = 'https://api.dhsprogram.com/rest/dhs/';
    var axiosInstance = axios.create({
      baseURL: 'https://api.dhsprogram.com/rest/dhs/'
    })
    try {
-     var apiURL = baseURL +
-                     "data?countryIds=" + strCountry +
+     var apiURL = baseURL + "data?countryIds=" + strCountry +
                      "&surveyIds=" + strSurveyYear +
                      "&indicatorIds=" + strIndicator +
-                     "&f=json&perpage=100&breakdown=all";
-    console.log("apiURL",apiURL);
+                     "&f=json&perpage=1000&breakdown=all";
+    console.log("apiURL", apiURL);
     let response = await axiosInstance.get(apiURL)
    //Obtain data.
    .then(response => {
@@ -172,12 +185,12 @@ populateCharacteristics(){
   render(){
     let countries = this.state.countries;
     let countryItems = countries.map((country) =>
-      <option key={this.getKey()}>{country.CountryName}</option>
+      <option key={country.CountryId}>{country.CountryName}</option>
   );
 
     let years = this.state.years;
     let yearItems = years.map((year) =>
-      <option key={this.getKey()}>{year.SurveyYearLabel}</option>
+      <option key={year.SurveyId}>{year.SurveyYearLabel}</option>
   );
 
     let indicators = this.state.indicators;
@@ -202,7 +215,7 @@ populateCharacteristics(){
        <p className="searchTitles">Characteristics: </p>
 
        <div>
-         <button className="graphButton" onClick={this.getGraphData()}>
+         <button className="graphButton" onClick={(e) => this.getGraphData(e)}>
            Graph
          </button>
        </div>
