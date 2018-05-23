@@ -26,9 +26,6 @@ class Search extends Component {
 
 // when the program loads, make the API call to get data to populate dropdown menu
  componentDidMount() {
-  // this.getCountries();
-  // this.getSurveyYears();
-  // this.getIndicators();
   this.getMenuData();
  }
 
@@ -39,39 +36,19 @@ class Search extends Component {
 // query rails API for countries
  getCountries(){
    return axios.get('http://localhost:3001/api/v1/countries.json')
-   // .then(response => {
-   //   console.log("countries");
-   //   console.log(response.data)
-   //   this.setState({
-   //     countries: response.data
-   //   });
-   // });
  }
 
 // query rails API for surveyYears
  getSurveyYears(){
    return axios.get('http://localhost:3001/api/v1/surveys.json')
-   // .then(response => {
-   //   console.log("survey years");
-   //   console.log(response.data)
-   //   this.setState({
-   //     years: response.data
-   //   });
-   // });
  }
 
 // query rails API for indicators
  getIndicators(){
     return axios.get('http://localhost:3001/api/v1/indicators.json')
-    // .then(response => {
-    //   console.log("indicators");
-    //   console.log(response.data)
-    //   this.setState({
-    //     indicators: response.data
-    //   });
-    // });
  }
 
+// need to modify current code--state for these variables is not getting set properly
 getMenuData(){
 var countries;
 var years;
