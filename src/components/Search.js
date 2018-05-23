@@ -26,7 +26,9 @@ class Search extends Component {
 
 // when the program loads, make the API call to get data to populate dropdown menu
  componentDidMount() {
-  this.getMenuData();
+  this.getCountries();
+  this.getSurveyYears();
+  this.getIndicators();
  }
 
  getKey(){
@@ -34,48 +36,61 @@ class Search extends Component {
 }
 
 // query rails API for countries
- getCountries(){
-   return axios.get('http://localhost:3001/api/v1/countries.json')
+ async getCountries(){
+   var axiosInstance = axios.create({
+     baseURL: 'http://localhost:3001/api/v1'
+   })
+   try {
+    let response = await axiosInstance.get('/countries')
+    console.log("countries", response.data[0]);
+    this.setState({
+      countries: response.data
+    })
+  } catch(err){
+    console.log(err);
+  }
  }
 
-// query rails API for surveyYears
- getSurveyYears(){
-   return axios.get('http://localhost:3001/api/v1/surveys.json')
+ async getSurveyYears(){
+   var axiosInstance = axios.create({
+     baseURL: 'http://localhost:3001/api/v1'
+   })
+   try {
+    let response = await axiosInstance.get('/surveys')
+    console.log("surveyYears", response.data[0]);
+    this.setState({
+      years: response.data
+    })
+  } catch(err){
+    console.log(err);
+  }
  }
 
-// query rails API for indicators
- getIndicators(){
-    return axios.get('http://localhost:3001/api/v1/indicators.json')
- }
-
-// need to modify current code--state for these variables is not getting set properly
-getMenuData(){
-var countries;
-var years;
-var indicators;
-   return axios.all([this.getCountries(), this.getSurveyYears(),this.getIndicators()])
-     .then(function(arr){
-       return {
-         countries: arr[0].data,
-         years: arr[1].data,
-         indicators: arr[2].data
-       }
-     });
-   this.setState({countries: countries, years: years, indicators: indicators });
+ async getIndicators(){
+   var axiosInstance = axios.create({
+     baseURL: 'http://localhost:3001/api/v1'
+   })
+   try {
+    let response = await axiosInstance.get('/indicators')
+    console.log("indicators", response.data[0]);
+    this.setState({
+      indicators: response.data
+    })
+  } catch(err){
+    console.log(err);
+  }
  }
 
 // store the selected country from dropdown menu in state
  handleCountry(e){
    console.log(e.target.value);
    this.setState({selectedCountry: e.target.value});
-
  }
 
 // store the selected year from dropdown menu in state
  handleYear(e){
    console.log(e.target.value);
    this.setState({selectedYear: e.target.value});
-
  }
 // store the selected indicator from dropdown menu in state
  handleIndicator(e){
@@ -90,27 +105,34 @@ var indicators;
 }
 
 // build the query based on user's selection to obtain the data
- getGraphData(){
+ async getGraphData(){
    var strCountry = this.state.selectedCountry;
    var strSurveyYear = this.state.selectedYear;
    var strIndicator = this.state.selectedIndicator;
    //Create URL to obtain data.
-   var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/";
-   var apiURL = gAPIDomain +
-                   "data?countryIds=" + strCountry +
-                   "&surveyIds=" + strSurveyYear +
-                   "&indicatorIds=" + strIndicator +
-                   "&f=json&perpage=100&breakdown=all";
-   console.log(apiURL);
+  var baseURL = 'https://api.dhsprogram.com/rest/dhs/';
+   var axiosInstance = axios.create({
+     baseURL: 'https://api.dhsprogram.com/rest/dhs/'
+   })
+   try {
+     var apiURL = baseURL +
+                     "data?countryIds=" + strCountry +
+                     "&surveyIds=" + strSurveyYear +
+                     "&indicatorIds=" + strIndicator +
+                     "&f=json&perpage=100&breakdown=all";
+    console.log("apiURL",apiURL);
+    let response = await axiosInstance.get(apiURL)
    //Obtain data.
-   axios.get(apiURL)
    .then(response => {
      console.log("Graph Data");
      console.log(response.data.Data[0])
      this.setState({
        arrData: response.data.Data
      });
-   });
+   })
+     } catch(err){
+    console.log(err);
+    }
  }
 
 // populate the characteristic groups
@@ -150,12 +172,12 @@ populateCharacteristics(){
   render(){
     let countries = this.state.countries;
     let countryItems = countries.map((country) =>
-      <option key={country.DHS_CountryCode}>{country.CountryName}</option>
+      <option key={this.getKey()}>{country.CountryName}</option>
   );
 
     let years = this.state.years;
     let yearItems = years.map((year) =>
-      <option key={year.SurveyId}>{year.SurveyYearLabel}</option>
+      <option key={this.getKey()}>{year.SurveyYearLabel}</option>
   );
 
     let indicators = this.state.indicators;
