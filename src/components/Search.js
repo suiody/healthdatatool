@@ -30,8 +30,6 @@ class Search extends Component {
 // when the program loads, make the API call to get data to populate dropdown menu
  componentDidMount() {
   this.getCountries();
-  this.getSurveyYears();
-  this.getIndicators();
  }
 
  getKey(){
@@ -41,77 +39,73 @@ class Search extends Component {
 // query rails API for countries
  async getCountries(){
    var axiosInstance = axios.create({
-     baseURL: 'http://localhost:3001/api/v1'
+     baseURL: 'https://api.dhsprogram.com/rest/dhs'
    })
    try {
     let response = await axiosInstance.get('/countries')
-    console.log("countries", response.data[0]);
     this.setState({
-      countries: response.data
+      countries: response.data.Data
     })
   } catch(err){
     console.log(err);
   }
  }
+ // store the selected country from dropdown menu in state
+  handleCountry(e){
+    this.setState({selectedCountry: e.target.value});
+    var selectedCountry = e.target.value;
+    var result = this.state.countries.filter((co) =>
+      co.CountryName === selectedCountry
+   );
+    var strCountry = result[0].DHS_CountryCode.toString();
+   // need the CountryId
+    this.getSurveyYears(strCountry);
+   }
 
- async getSurveyYears(){
-   var axiosInstance = axios.create({
-     baseURL: 'http://localhost:3001/api/v1'
-   })
-   try {
-    let response = await axiosInstance.get('/surveys')
-    console.log("surveyYears", response.data[0]);
-    this.setState({
-      years: response.data
-    })
-  } catch(err){
-    console.log(err);
-  }
- }
+getSurveyYears(strCountry){
+    var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/"
+    var apiURL =  gAPIDomain + "surveys/" + strCountry + "?surveyType=DHS";
+    axios.get(apiURL)
+    .then(response => {
+      console.log("survey Years");
+      console.log(response.data.Data[0])
+      this.setState({
+        years: response.data.Data
+      });
+    });
+}
 
+ // have to alter this, needs to be dynamic, e.g. indicators populated after user selects country
  async getIndicators(){
+   var gAPIDomain = "https://api.dhsprogram.com/rest/dhs"
+   var strCountry = this.state.selectedCountry;
+   var strSurveyYear = this.state.selectedYear;
+   //Create URL to obtain data.
+   var apiURL = gAPIDomain +
+                   "data?countryIds=" + strCountry +
+                   "&surveyIds=" + strSurveyYear +
+                   "&indicatorIds=" +
+                   "&f=json&perpage=1000&breakdown=all";
    var axiosInstance = axios.create({
-     baseURL: 'http://localhost:3001/api/v1'
+     baseURL: 'https://api.dhsprogram.com/rest/dhs/'
    })
    try {
     let response = await axiosInstance.get('/indicators')
-    console.log("indicators", response.data[0]);
     this.setState({
-      indicators: response.data
+      indicators: response.data.Data
     })
   } catch(err){
     console.log(err);
   }
  }
 
-// store the selected country from dropdown menu in state
- handleCountry(e){
-   this.setState({selectedCountry: e.target.value});
-   var selectedCountry = e.target.value;
-   // now retrieve the CountryId for the selected country from the countries array
-   var result = this.state.countries.filter((co) =>
-    co.CountryName === selectedCountry
-   );
-   var CountryId = result[0].DHS_CountryCode.toString();
-   this.setState({CountryId: CountryId});
-   console.log("CountryId", CountryId);
- }
-
-// works for handleCountry, need to figure out for handleYear and handleIndicator
-// store the selected year from dropdown menu in state
  handleYear(e){
    this.setState({selectedYear: e.target.value});
-   // now retrieve the surveyId for the selected country from the years array
-   var selectedYear = e.target.value;
-
  }
 
 // store the selected indicator from dropdown menu in state
  handleIndicator(e){
-   this.setState({selectedIndicator: e.target.value });
-   // now retrieve the IndicatorId for the selected country from the indicators array
-   var selectedIndicator = e.target.value;
-
+   this.setState({IndicatorId: e.target.value});
  }
 
  handleCharacteristics(e){
@@ -188,15 +182,15 @@ populateCharacteristics(){
       <option key={country.CountryId}>{country.CountryName}</option>
   );
 
-    let years = this.state.years;
-    let yearItems = years.map((year) =>
-      <option key={year.SurveyId}>{year.SurveyYearLabel}</option>
-  );
-
-    let indicators = this.state.indicators;
-    let indicatorItems = indicators.map((ind) =>
-      <option key={ind.IndicatorId}>{ind.Label}</option>
-  );
+  //   let years = this.state.years;
+  //   let yearItems = years.map((year) =>
+  //     <option key={year.SurveyId}>{year.SurveyYearLabel}</option>
+  // );
+  //
+  //   let indicators = this.state.indicators;
+  //   let indicatorItems = indicators.map((ind) =>
+  //     <option key={ind.IndicatorId}>{ind.Definition}</option>
+  // );
 
     return (
    <div className="container-fluid">
@@ -204,21 +198,8 @@ populateCharacteristics(){
        <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
           {countryItems}
        </select>
-       <p className="searchTitles">Survey Years: </p>
-       <select className="dropDown" onChange={(e) => this.handleYear(e)}>
-          {yearItems}
-       </select>
-       <p className="searchTitles">Indicators: </p>
-       <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
-          {indicatorItems}
-       </select>
-       <p className="searchTitles">Characteristics: </p>
 
-       <div>
-         <button className="graphButton" onClick={(e) => this.getGraphData(e)}>
-           Graph
-         </button>
-       </div>
+
        </div>
     );
   }
