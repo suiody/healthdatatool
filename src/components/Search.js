@@ -66,13 +66,19 @@ class Search extends Component {
 
 // need to refactor considering cases where there is only one survey year, doesn't work yet...
 handleYear(e){
-   this.setState({selectedYear: e.target.value});
+   this.setState({ selectedYear: e.target.value });
    var selectedYear = e.target.value;
+   if (selectedYear.length == 1) {
+    selectedYear = e.target.value[0];
+   } else {
+     selectedYear = e.target.value;
+   }
+
    var result = this.state.years.filter((yr) =>
-     yr.SurveyYear === selectedYear
+     yr.SurveyYearLabel === selectedYear
   );
   // need to refactor...grab value
-   var strSurveyYear = result[0].SurveyYear;
+   var strSurveyYear = result[0].SurveyYearLabel;
    this.setState({ strSurveyYear: strSurveyYear })
    this.getIndicators(this.state.strCountry, this.state.strSurveyYear);
 }
