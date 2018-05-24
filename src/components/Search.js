@@ -26,6 +26,9 @@ class Search extends Component {
    }
    this.keyCount = 0;
    this.getKey = this.getKey.bind(this);
+   this.handleCountry = this.handleCountry.bind(this);
+   this.handleYear = this.handleYear.bind(this);
+   this.handleIndicator = this.handleIndicator.bind(this);
  }
 
 // when the program loads, make the API call to get data to populate dropdown menu
@@ -64,66 +67,57 @@ class Search extends Component {
     this.getSurveyYears(strCountry);
    }
 
-// need to refactor considering cases where there is only one survey year, doesn't work yet...
-handleYear(e){
-   this.setState({ selectedYear: e.target.value });
-   var selectedYear = e.target.value;
-   if (selectedYear.length == 1) {
-    selectedYear = e.target.value[0];
-   } else {
-     selectedYear = e.target.value;
-   }
-
-   var result = this.state.years.filter((yr) =>
-     yr.SurveyYearLabel === selectedYear
-  );
-  // need to refactor...grab value
-   var strSurveyYear = result[0].SurveyYearLabel;
-   this.setState({ strSurveyYear: strSurveyYear })
-   this.getIndicators(this.state.strCountry, this.state.strSurveyYear);
-}
+// fetch survey years based on country selection
 getSurveyYears(strCountry){
     var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/"
     var apiURL =  gAPIDomain + "surveys/" + strCountry + "?surveyType=DHS";
     axios.get(apiURL)
     .then(response => {
       console.log("survey Years");
-      console.log(response.data.Data[0])
+      console.log(response.data.Data[0]);
       this.setState({
         years: response.data.Data
       });
     });
 }
+// handle survey year selection
+handleYear(e){
+   this.setState({ selectedYear: e.target.value });
+   var selectedYear = e.target.value;
+   console.log("selectedYear", selectedYear);
+   if(this.state.years.length === 1){
+     var strSurveyYear = this.state.years.surveyYear.SurveyId;
+   } else {
+     console.log("result", result);
+     var result = this.state.years.filter((yr) =>
+       yr.SurveyYear.toString() === selectedYear
+    );
+     var strSurveyYear = result[0].SurveyId;
+   }
+   console.log("strSurveyYear", strSurveyYear);
+   this.setState({ strSurveyYear: strSurveyYear });
+   this.getIndicators(this.state.strCountry,strSurveyYear);
+}
 
-// refactor this
+// fetch the indicator data based on country and year selection
  async getIndicators(strCountry, strSurveyYear){
-   var gAPIDomain = "https://api.dhsprogram.com/rest/dhs"
-   var strCountry = this.state.selectedCountry;
-   var strSurveyYear = this.state.selectedYear;
-   //Create URL to obtain data.
-   var apiURL = gAPIDomain +
-                   "data?countryIds=" + strCountry +
-                   "&surveyIds=" + strSurveyYear +
-                   "&indicatorIds=" +
-                   "&f=json&perpage=1000&breakdown=all";
-   var axiosInstance = axios.create({
-     baseURL: 'https://api.dhsprogram.com/rest/dhs/'
-   })
-   try {
-    let response = await axiosInstance.get('/indicators')
-    this.setState({
-      indicators: response.data.Data
-    })
-  } catch(err){
-    console.log(err);
-  }
+   // Create URL to obtain indicators. Specify 1000 rows to get maximum results.
+   var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/"
+   var apiURL = gAPIDomain + "indicators?countryIds=" + strCountry + "&surveyIds=" + strSurveyYear + "&perpage=1000&f=json";
+   axios.get(apiURL)
+   .then(response => {
+     console.log("Indicators");
+     console.log(response.data.Data[0]);
+     this.setState({
+       indicators: response.data.Data
+     });
+   });
  }
 
 // store the selected indicator from dropdown menu in state
  handleIndicator(e){
    this.setState({IndicatorId: e.target.value});
  }
-
 
  handleCharacteristics(e){
   this.setState({selectedCharacteristic: e.target.value});
@@ -196,7 +190,7 @@ getSurveyYears(strCountry){
        <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
         {
           this.state.countries.map((country) =>
-           <option key={country.CountryId}>{country.CountryName}</option>
+           <option key={this.getKey()}>{country.CountryName}</option>
           )
        }
      );
@@ -205,7 +199,7 @@ getSurveyYears(strCountry){
       <select className="dropDown" onChange={(e) => this.handleYear(e)}>
          {
             this.state.years.map((year) =>
-              <option key={year.SurveyId}>{year.SurveyYearLabel}</option>
+              <option key={this.getKey()}>{year.SurveyYear}</option>
             )
          }
       </select>
@@ -213,7 +207,7 @@ getSurveyYears(strCountry){
       <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
         {
           this.state.indicators.map((ind) =>
-            <option key={ind.IndicatorId}>{ind.Label}</option>
+            <option key={this.getKey()}>{ind.Label}</option>
           )
         }
       </select>
