@@ -22,26 +22,34 @@ class Search extends Component {
      strCountry: '', // keeps track of the countryId for DHS query
      strSurveyYear: '', // keeps track of surveyId for DHS query
      strIndicator: '', // keeps track of indicatorId for DHS query,
-     strCharGroup: '' // keeps track of current characteristic group to map
+     strCharGroup: '', // keeps track of current characteristic group to map
+     selected: ''
    }
    this.keyCount = 0;
+   this.valueCount = 0;
    this.getKey = this.getKey.bind(this);
+   this.getCountries = this.getCountries.bind(this);
    this.handleCountry = this.handleCountry.bind(this);
+   this.getSurveyYears = this.getSurveyYears.bind(this);
    this.handleYear = this.handleYear.bind(this);
+   this.getIndicators = this.getIndicators.bind(this);
    this.handleIndicator = this.handleIndicator.bind(this);
    this.getCharacteristics = this.getCharacteristics.bind(this);
-   this.handleCharacteristics = this.handleCharacteristics.bind(this);
+   this.handleCharacteristic = this.handleCharacteristic.bind(this);
  }
 
 // when the program loads, make the API call to get data to populate dropdown menu
- componentDidMount() {
-  this.getCountries();
- }
+  componentDidMount() {
+    this.getCountries();
+  }
 
- getKey(){
-  return this.keyCount++;
-}
+  getKey(){
+    return this.keyCount++;
+  }
 
+  getValue(){
+   return this.valueCount++;
+  }
 // query rails API for countries
  async getCountries(){
    var axiosInstance = axios.create({
@@ -59,13 +67,13 @@ class Search extends Component {
 
  // store the selected country from dropdown menu in state
   handleCountry(e){
-    this.setState({ selectedCountry: e.target.value });
     var selectedCountry = e.target.value;
+    console.log("selected country:", selectedCountry);
     var result = this.state.countries.filter((co) =>
       co.CountryName === selectedCountry
    );
     var strCountry = result[0].DHS_CountryCode.toString();
-    this.setState({ strCountry: strCountry })
+    this.setState({ strCountry: strCountry, selectedCountry: selectedCountry })
     this.getSurveyYears(strCountry);
    }
 
@@ -84,19 +92,16 @@ getSurveyYears(strCountry){
 }
 // handle survey year selection
 handleYear(e){
-   this.setState({ selectedYear: e.target.value });
    var selectedYear = e.target.value;
+   this.setState({ selectedYear: selectedYear });
    console.log("selectedYear", selectedYear);
-   if(this.state.years.length === 1){
-     var strSurveyYear = this.state.years.surveyYear.SurveyId;
-   } else {
-
-     var result = this.state.years.filter((yr) =>
-       yr.SurveyYear.toString() === selectedYear
-    );
+   this.state.years.shift(); // get rid of the placeholder element
+   console.log("this.state.years", this.state.years);
+   var result = this.state.years.filter((yr) =>
+     yr.SurveyYear.toString() === selectedYear
+   );
     console.log("result", result);
-      strSurveyYear = result[0].SurveyId;
-   }
+   var strSurveyYear = result[0].SurveyId;
    console.log("strSurveyYear", strSurveyYear);
    this.setState({ strSurveyYear: strSurveyYear });
    this.getIndicators(this.state.strCountry,strSurveyYear);
@@ -121,7 +126,7 @@ handleYear(e){
  handleIndicator(e){
    var selectedIndicator = e.target.value;
    console.log("selectedIndicator",selectedIndicator);
-   console.log("this.state.indicators",this.state.indicators[0]);
+   this.state.indicators.shift(); // remove placeholder element
    var result = this.state.indicators.filter((co) =>
     co.Label.toString() === selectedIndicator
    );
@@ -169,48 +174,59 @@ handleYear(e){
 
 }
 
-handleCharacteristics(e){
- this.setState({selectedCharacteristic: e.target.value});
+handleCharacteristic(e){
+ var selectedCharacteristic = e.target.value;
+ this.state.characteristics.shift();
+ console.log("selected characteristic", selectedCharacteristic);
+ this.setState({selectedCharacteristic: selectedCharacteristic});
 }
 
   render(){
-    let countries = this.state.countries;
-    let years = this.state.years;
-    let indicators = this.state.indicators;
-    let characteristics = this.state.characteristics;
+    let tmpCountries = this.state.countries;
+    let countries = tmpCountries.unshift("0"); //add a placeholder for dropdown
+
+    let tmpYears = this.state.years;
+    let years = tmpYears.unshift("0");  //add a placeholder for dropdown
+
+    let tmpIndicators = this.state.indicators;
+    let indicators = tmpIndicators.unshift("0");  //add a placeholder for dropdown
+
+    let tmpCharacteristics = this.state.characteristics;
+    let characteristics = tmpCharacteristics.unshift("0"); //add a placeholder for dropdown
 
     return (
    <div className="container-fluid">
-       <p className="searchTitles">Countries: </p>
+       <p className="searchTitles">Countries:</p>
        <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
         {
           this.state.countries.map((country) =>
-           <option key={this.getKey()}>{country.CountryName}</option>
+           <option key={this.getKey()}>{country.CountryName ? country.CountryName : "Select a country"}</option>
           )
        }
      );
        </select>
-       <p className="searchTitles">Survey Years: </p>
+
+       <p className="searchTitles">Survey Years:</p>
       <select className="dropDown" onChange={(e) => this.handleYear(e)}>
          {
             this.state.years.map((year) =>
-              <option key={this.getKey()}>{year.SurveyYear}</option>
+              <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : "Select a year"}</option>
             )
          }
       </select>
-      <p className="searchTitles">Indicators: </p>
+      <p className="searchTitles">Indicators:</p>
       <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
         {
           this.state.indicators.map((ind) =>
-            <option key={this.getKey()}>{ind.Label}</option>
+            <option key={this.getKey()}>{ind.Label ? ind.Label : "Select an indicator"}</option>
           )
         }
       </select>
       <p className="searchTitles">Characteristics: </p>
-      <select className="dropDown" onChange={(e) => this.handleCharacteristics(e)}>>
+      <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)}>>
       {
         this.state.characteristics.map((c) =>
-          <option key={this.getKey()}>{c}</option>
+          <option key={this.getKey()}>{c === "0" ? "Select a category": c}</option>
         )
       }
       </select>
