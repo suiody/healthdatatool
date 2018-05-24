@@ -1,8 +1,5 @@
 #README
-
-Front-end for health data tool made in React, which corresponds to healthdatatool-api, which uses a Rails 5 api on the back-end.
-
-Motivation: Development databases contain a wealth of information, yet many are geared toward analysts, or others in technical roles, and the user interfaces require a bit of a learning curve.
+Motivation: Development databases contain a wealth of information, yet many are geared toward analysts, or others in technical roles, and the user interfaces require a bit of a learning curve. 
 
 This open source project aims to:  
 - to provide a simple, intuitive web app to enable users to search several popular development databases for health and environmental datasets
