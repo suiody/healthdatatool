@@ -21,9 +21,8 @@ class Search extends Component {
      arrData: {},
      strCountry: '', // keeps track of the countryId for DHS query
      strSurveyYear: '', // keeps track of surveyId for DHS query
-     strIndicator: '', // keeps track of indicatorId for DHS query,
-     strCharGroup: '', // keeps track of current characteristic group to map
-     selected: ''
+     strIndicator: '', // keeps track of indicatorId for DHS query
+     strCharGroup: '' // keeps track of current characteristic group to map
    }
    this.keyCount = 0;
    this.valueCount = 0;
@@ -68,7 +67,6 @@ class Search extends Component {
  // store the selected country from dropdown menu in state
   handleCountry(e){
     var selectedCountry = e.target.value;
-    console.log("selected country:", selectedCountry);
     var result = this.state.countries.filter((co) =>
       co.CountryName === selectedCountry
    );
@@ -83,8 +81,6 @@ getSurveyYears(strCountry){
     var apiURL =  gAPIDomain + "surveys/" + strCountry + "?surveyType=DHS";
     axios.get(apiURL)
     .then(response => {
-      console.log("survey Years");
-      console.log(response.data.Data[0]);
       this.setState({
         years: response.data.Data
       });
@@ -94,15 +90,11 @@ getSurveyYears(strCountry){
 handleYear(e){
    var selectedYear = e.target.value;
    this.setState({ selectedYear: selectedYear });
-   console.log("selectedYear", selectedYear);
    this.state.years.shift(); // get rid of the placeholder element
-   console.log("this.state.years", this.state.years);
    var result = this.state.years.filter((yr) =>
      yr.SurveyYear.toString() === selectedYear
    );
-    console.log("result", result);
    var strSurveyYear = result[0].SurveyId;
-   console.log("strSurveyYear", strSurveyYear);
    this.setState({ strSurveyYear: strSurveyYear });
    this.getIndicators(this.state.strCountry,strSurveyYear);
 }
@@ -114,8 +106,6 @@ handleYear(e){
    var apiURL = gAPIDomain + "indicators?countryIds=" + strCountry + "&surveyIds=" + strSurveyYear + "&perpage=1000&f=json";
    axios.get(apiURL)
    .then(response => {
-     console.log("Indicators");
-     console.log(response.data.Data[0]);
      this.setState({
        indicators: response.data.Data
      });
@@ -125,12 +115,10 @@ handleYear(e){
 // store the selected indicator from dropdown menu in state
  handleIndicator(e){
    var selectedIndicator = e.target.value;
-   console.log("selectedIndicator",selectedIndicator);
    this.state.indicators.shift(); // remove placeholder element
    var result = this.state.indicators.filter((co) =>
     co.Label.toString() === selectedIndicator
    );
-   console.log("results indicators",result);
    var strIndicator = result[0].IndicatorId;
    this.setState({IndicatorId: e.target.value});
    this.getCharacteristics(this.state.strCountry,this.state.strSurveyYear,strIndicator);
@@ -177,13 +165,14 @@ handleYear(e){
 handleCharacteristic(e){
  var selectedCharacteristic = e.target.value;
  this.state.characteristics.shift();
- console.log("selected characteristic", selectedCharacteristic);
  this.setState({selectedCharacteristic: selectedCharacteristic});
 }
 
   render(){
     let tmpCountries = this.state.countries;
-    let countries = tmpCountries.unshift("0"); //add a placeholder for dropdown for first menu item
+    //add a placeholder for dropdown for first menu item
+    // within render, placeholder gets filled with a message...
+    let countries = tmpCountries.unshift("0"); 
 
     let tmpYears = this.state.years;
     let years = tmpYears.unshift("0");  //placeholder
