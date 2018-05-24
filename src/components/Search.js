@@ -183,16 +183,16 @@ handleCharacteristic(e){
 
   render(){
     let tmpCountries = this.state.countries;
-    let countries = tmpCountries.unshift("0"); //add a placeholder for dropdown
+    let countries = tmpCountries.unshift("0"); //add a placeholder for dropdown for first menu item
 
     let tmpYears = this.state.years;
-    let years = tmpYears.unshift("0");  //add a placeholder for dropdown
+    let years = tmpYears.unshift("0");  //placeholder
 
     let tmpIndicators = this.state.indicators;
-    let indicators = tmpIndicators.unshift("0");  //add a placeholder for dropdown
+    let indicators = tmpIndicators.unshift("0");  //placeholder
 
     let tmpCharacteristics = this.state.characteristics;
-    let characteristics = tmpCharacteristics.unshift("0"); //add a placeholder for dropdown
+    let characteristics = tmpCharacteristics.unshift("0"); //placeholder
 
     return (
    <div className="container-fluid">
