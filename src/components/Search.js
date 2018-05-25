@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import './Search.css';
-
-// import Highcharts from 'highcharts';
-
-var axios = require('axios');
+import axios from 'axios';
 
 class Search extends Component {
 
@@ -18,7 +15,7 @@ class Search extends Component {
      selectedIndicator: [], //current indicator selected from dropdown,
      characteristics: [], // holds characteristic groups for the selected indicator,
      selectedCharacteristic: [], // selected characteristic
-     arrData: {},
+     arrData: {}, // stores formatted characterstics/values for graphing
      strCountry: '', // keeps track of the countryId for DHS query
      strSurveyYear: '', // keeps track of surveyId for DHS query
      strIndicator: '', // keeps track of indicatorId for DHS query
@@ -39,9 +36,10 @@ class Search extends Component {
 
 // when the program loads, make the API call to get data to populate dropdown menu
   componentDidMount() {
-    this.getCountries();
+    this.getCountries(); // load countries first, other menus are dependent on country selection
   }
 
+// getKey and getValue are for providing unique key/values; there are sometimes overlapping values within the datasets
   getKey(){
     return this.keyCount++;
   }
@@ -49,7 +47,8 @@ class Search extends Component {
   getValue(){
    return this.valueCount++;
   }
-// query rails API for countries
+
+// query DHS API for countries
  async getCountries(){
    var axiosInstance = axios.create({
      baseURL: 'https://api.dhsprogram.com/rest/dhs'
@@ -63,19 +62,19 @@ class Search extends Component {
     console.log(err);
   }
  }
-
  // store the selected country from dropdown menu in state
   handleCountry(e){
     var selectedCountry = e.target.value;
+    this.state.countries.shift(); // get rid of the placeholder element
     var result = this.state.countries.filter((co) =>
       co.CountryName === selectedCountry
    );
     var strCountry = result[0].DHS_CountryCode.toString();
-    this.setState({ strCountry: strCountry, selectedCountry: selectedCountry })
+    this.setState({ strCountry: strCountry, selectedCountry: selectedCountry });
     this.getSurveyYears(strCountry);
    }
 
-// fetch survey years based on country selection
+// query DHS API survey years based on country selection
 getSurveyYears(strCountry){
     var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/"
     var apiURL =  gAPIDomain + "surveys/" + strCountry + "?surveyType=DHS";
@@ -86,7 +85,7 @@ getSurveyYears(strCountry){
       });
     });
 }
-// handle survey year selection
+// handle survey year selection; extract surveyId and store selectedYear in state
 handleYear(e){
    var selectedYear = e.target.value;
    this.setState({ selectedYear: selectedYear });
@@ -99,7 +98,7 @@ handleYear(e){
    this.getIndicators(this.state.strCountry,strSurveyYear);
 }
 
-// fetch the indicator data based on country and year selection
+// fetch the indicator data based on country and year selection from DHS API
  async getIndicators(strCountry, strSurveyYear){
    // Create URL to obtain indicators. Specify 1000 rows to get maximum results.
    var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/"
@@ -112,7 +111,7 @@ handleYear(e){
    });
  }
 
-// store the selected indicator from dropdown menu in state
+// store the selected indicator in state
  handleIndicator(e){
    var selectedIndicator = e.target.value;
    this.state.indicators.shift(); // remove placeholder element
@@ -124,9 +123,8 @@ handleYear(e){
    this.getCharacteristics(this.state.strCountry,this.state.strSurveyYear,strIndicator);
  }
 
-// build the query based on user's selection to obtain the data
+// build the query based on user's selection to obtain the data from DHS API
  async getCharacteristics(strCountry,strSurveyYear,strIndicator){
-
    var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/";
    //Create URL to obtain data.
    var apiURL = gAPIDomain + "data?countryIds=" + strCountry +
@@ -137,10 +135,9 @@ handleYear(e){
     axios.get(apiURL)
     .then(response => {
       var arrData = {};
-      var unformattedData = response.data.Data;
-      console.log("arrData", response.data.Data);
+      var inputData = response.data.Data;
    // format the characteristic labels for charting
-     unformattedData.forEach(function(value, index) {
+     inputData.forEach(function(value, index) {
        if(!arrData[value.CharacteristicCategory]){
           arrData[value.CharacteristicCategory] = {};
           arrData[value.CharacteristicCategory][value.CharacteristicLabel] = {};
@@ -156,32 +153,66 @@ handleYear(e){
            arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value; }
          }
       });
-    var listCharGroups = Object.keys(arrData);
-    this.setState({arrData: unformattedData, characteristics: listCharGroups});
- });
+      this.setState({arrData: arrData});
+      console.log("arrData", arrData);
+      // populate the data characteristics drop down menu
+      var listCharGroups = Object.keys(arrData);
+        this.setState({characteristics: listCharGroups});
+    });
+  }
 
-}
-
+// store selected characterstic in state
 handleCharacteristic(e){
- var selectedCharacteristic = e.target.value;
- this.state.characteristics.shift();
- this.setState({selectedCharacteristic: selectedCharacteristic});
+  var selectedCharacteristic = e.target.value;
+  this.state.characteristics.shift();
+  this.setState({selectedCharacteristic: selectedCharacteristic});
+  var strCharGroup = selectedCharacteristic;
+  this.graphData(strCharGroup);
 }
 
+graphData(strCharGroup){
+  var xAxisCategories = [];
+  var arrSeriesNames = [];
+  var arrSeriesValues = [];
+  var arrData = this.state.arrData;
+  console.log("arrData", arrData);
+
+  xAxisCategories = Object.keys(arrData[strCharGroup]);
+  arrSeriesNames = Object.values(arrData[strCharGroup]);
+  arrSeriesNames.forEach(function(series){
+     arrSeriesValues.push(Object.values(series));
+  });
+
+  console.log("xAxisCategories", xAxisCategories);
+  console.log('arrSeriesNames', arrSeriesNames);
+  console.log('arrSeriesValues', arrSeriesValues);
+
+  var chart = {
+    title: {
+        text: this.state.selectedCharacteristic.toString()
+    },
+    xAxis: {
+        categories: xAxisCategories
+    },
+    yAxis: {
+      data: arrSeriesValues
+    }
+  };
+}
   render(){
-    let tmpCountries = this.state.countries;
     //add a placeholder for dropdown for first menu item
-    // within render, placeholder gets filled with a message...
-    let countries = tmpCountries.unshift("0"); 
+    // within render, placeholder gets filled with a message.
+    let tmpCountries = this.state.countries;
+    let countries = tmpCountries.unshift("0");
 
     let tmpYears = this.state.years;
-    let years = tmpYears.unshift("0");  //placeholder
+    let years = tmpYears.unshift("0");
 
     let tmpIndicators = this.state.indicators;
-    let indicators = tmpIndicators.unshift("0");  //placeholder
+    let indicators = tmpIndicators.unshift("0");
 
     let tmpCharacteristics = this.state.characteristics;
-    let characteristics = tmpCharacteristics.unshift("0"); //placeholder
+    let characteristics = tmpCharacteristics.unshift("0");
 
     return (
    <div className="container-fluid">
@@ -220,10 +251,7 @@ handleCharacteristic(e){
       }
       </select>
 
-      <button>
-        Graph
-      </button>
-
+      <button>Graph</button>
        </div>
     );
   }
