@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './Search.css';
 import axios from 'axios';
+import './react_plot_style.css';
+import {XYPlot, XAxis, YAxis,VerticalBarSeries} from 'react-vis';
 
 class Search extends Component {
 
@@ -19,7 +21,8 @@ class Search extends Component {
      strCountry: '', // keeps track of the countryId for DHS query
      strSurveyYear: '', // keeps track of surveyId for DHS query
      strIndicator: '', // keeps track of indicatorId for DHS query
-     strCharGroup: '' // keeps track of current characteristic group to map
+     strCharGroup: '', // keeps track of current characteristic group to map
+     data: [] // data values for graphing
    }
    this.keyCount = 0;
    this.valueCount = 0;
@@ -175,29 +178,23 @@ graphData(strCharGroup){
   var arrSeriesNames = [];
   var arrSeriesValues = [];
   var arrData = this.state.arrData;
-  console.log("arrData", arrData);
-
   xAxisCategories = Object.keys(arrData[strCharGroup]);
   arrSeriesNames = Object.values(arrData[strCharGroup]);
   arrSeriesNames.forEach(function(series){
      arrSeriesValues.push(Object.values(series));
   });
+  var data = [];
+  var yAxisValues = [].concat.apply([], arrSeriesValues);
 
-  console.log("xAxisCategories", xAxisCategories);
-  console.log('arrSeriesNames', arrSeriesNames);
-  console.log('arrSeriesValues', arrSeriesValues);
-
-  var chart = {
-    title: {
-        text: this.state.selectedCharacteristic.toString()
-    },
-    xAxis: {
-        categories: xAxisCategories
-    },
-    yAxis: {
-      data: arrSeriesValues
-    }
-  };
+  for (var i = 0; i < xAxisCategories.length; i++){
+    var hash = {};
+    var key = xAxisCategories[i].toString();
+    var value = yAxisValues[i];
+    var x, y;
+    data.push({x: key, y: value});
+  }
+  console.log("data", data);
+ this.setState({data: data});
 }
   render(){
     //add a placeholder for dropdown for first menu item
@@ -251,7 +248,23 @@ graphData(strCharGroup){
       }
       </select>
 
-      <button>Graph</button>
+    <XYPlot xType="ordinal" height={200} width={400}>
+      <XAxis
+        attr="x"
+        attrAxis="y"
+        orientation="bottom"
+      />
+      <YAxis
+        attr="y"
+        attrAxis="x"
+        orientation="left"
+      />
+      <VerticalBarSeries
+        data={this.state.data}
+        style={{}}
+      />
+  </XYPlot>
+
        </div>
     );
   }

@@ -1,0 +1,33 @@
+<XYPlot xType="ordinal" height={200} width={400}>
+  <XAxis
+    attr="x"
+    attrAxis="y"
+    orientation="bottom"
+  />
+  <YAxis
+    attr="y"
+    attrAxis="x"
+    orientation="left"
+  />
+  <VerticalBarSeries
+    data={[
+      {
+        x: 'No education',
+        y: 174
+      },
+       {
+        x: 'Primary',
+        y: 157
+      },
+       {
+         x: 'Secondary',
+        y: 79
+      },
+       {
+          x: 'Higher',
+          y: 53
+        }
+     ]}
+    style={{}}
+  />
+</XYPlot>
