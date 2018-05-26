@@ -40,7 +40,7 @@ getTopics(){
 render(){
   return(
     <div>
-    World Bank Info will eventually be added to another page.
+  
     </div>
   );
    }
