@@ -213,6 +213,17 @@ graphData(strCharGroup){
 
     return (
    <div className="container-fluid">
+
+     <div className="instructions">
+     <p>Note: app in early stages of development; styling and messaging have not been added yet.</p>
+       <p>Select a country from the countries drop down.</p>
+       <p>Select a survey year from the survey drop down.</p>
+       <p>Select a characteristic from the drop down menu.</p>
+       <p>Once you select a characteristic, a graph will populate.</p>
+       <p>To change the graph, select a different characteristic.</p>
+       <p>Menus are populated based on external api calls, so there may be a brief delay while the data loads.</p>
+     </div>
+
        <p className="searchTitles">Countries:</p>
        <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
         {
