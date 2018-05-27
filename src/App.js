@@ -5,7 +5,6 @@ import Search from './components/Search';
 import WorldBank from './components/WorldBank';
 import './App.css';
 
-
 class App extends Component {
 
   render() {
@@ -15,7 +14,6 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Health Data Tool</h1>
         </header>
-
         <main>
          <Route exact path='/' component={Search}/>
          <Route exact path='/' component={WorldBank}/>

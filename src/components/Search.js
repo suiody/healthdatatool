@@ -22,11 +22,15 @@ class Search extends Component {
      strSurveyYear: '', // keeps track of surveyId for DHS query
      strIndicator: '', // keeps track of indicatorId for DHS query
      strCharGroup: '', // keeps track of current characteristic group to map
-     data: [] // data values for graphing
+     data: [], // data values for graphing
+     isCountryDisabled: false,
+     isYearDisabled: false,
+     isIndicatorDisabled: false
    }
    this.keyCount = 0;
    this.valueCount = 0;
    this.getKey = this.getKey.bind(this);
+   this.getValue = this.getValue.bind(this);
    this.getCountries = this.getCountries.bind(this);
    this.handleCountry = this.handleCountry.bind(this);
    this.getSurveyYears = this.getSurveyYears.bind(this);
@@ -74,6 +78,7 @@ class Search extends Component {
    );
     var strCountry = result[0].DHS_CountryCode.toString();
     this.setState({ strCountry: strCountry, selectedCountry: selectedCountry });
+    this.setState({ isCountryDisabled: true });
     this.getSurveyYears(strCountry);
    }
 
@@ -98,6 +103,7 @@ handleYear(e){
    );
    var strSurveyYear = result[0].SurveyId;
    this.setState({ strSurveyYear: strSurveyYear });
+   this.setState({ isYearDisabled: true });
    this.getIndicators(this.state.strCountry,strSurveyYear);
 }
 
@@ -122,7 +128,9 @@ handleYear(e){
     co.Label.toString() === selectedIndicator
    );
    var strIndicator = result[0].IndicatorId;
+   this.setState({selectedIndicator: selectedIndicator});
    this.setState({IndicatorId: e.target.value});
+   this.setState({ isIndicatorDisabled: true });
    this.getCharacteristics(this.state.strCountry,this.state.strSurveyYear,strIndicator);
  }
 
@@ -196,6 +204,12 @@ graphData(strCharGroup){
   console.log("data", data);
  this.setState({data: data});
 }
+
+handleQuery(e){
+ // make the menu drop downs available again for a new query
+ this.setState({isCountryDisabled: false, isYearDisabled: false, isIndicatorDisabled: false, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [] });
+}
+
   render(){
     //add a placeholder for dropdown for first menu item
     // within render, placeholder gets filled with a message.
@@ -213,19 +227,8 @@ graphData(strCharGroup){
 
     return (
    <div className="container-fluid">
-
-     <div className="instructions">
-     <p>Note: app in early stages of development; styling and messaging have not been added yet.</p>
-       <p>Select a country from the countries drop down.</p>
-       <p>Select a survey year from the survey drop down.</p>
-       <p>Select a characteristic from the drop down menu.</p>
-       <p>Once you select a characteristic, a graph will populate.</p>
-       <p>To change the graph, select a different characteristic.</p>
-       <p>Menus are populated based on external api calls, so there may be a brief delay while the data loads.</p>
-     </div>
-
        <p className="searchTitles">Countries:</p>
-       <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
+       <select className="dropDown" onChange={(e) => this.handleCountry(e)} value={this.state.selectedCountry} disabled={this.state.isCountryDisabled}>
         {
           this.state.countries.map((country) =>
            <option key={this.getKey()}>{country.CountryName ? country.CountryName : "Select a country"}</option>
@@ -235,7 +238,7 @@ graphData(strCharGroup){
        </select>
 
        <p className="searchTitles">Survey Years:</p>
-      <select className="dropDown" onChange={(e) => this.handleYear(e)}>
+      <select className="dropDown" onChange={(e) => this.handleYear(e)} value={this.state.selectedYear} disabled={this.state.isYearDisabled}>
          {
             this.state.years.map((year) =>
               <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : "Select a year"}</option>
@@ -243,7 +246,7 @@ graphData(strCharGroup){
          }
       </select>
       <p className="searchTitles">Indicators:</p>
-      <select className="dropDown" onChange={(e) => this.handleIndicator(e)}>
+      <select className="dropDown" onChange={(e) => this.handleIndicator(e)} value={this.state.selectedIndicator} disabled={this.state.isIndicatorDisabled}>
         {
           this.state.indicators.map((ind) =>
             <option key={this.getKey()}>{ind.Label ? ind.Label : "Select an indicator"}</option>
@@ -251,30 +254,32 @@ graphData(strCharGroup){
         }
       </select>
       <p className="searchTitles">Characteristics: </p>
-      <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)}>>
+      <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic}>
       {
         this.state.characteristics.map((c) =>
           <option key={this.getKey()}>{c === "0" ? "Select a category": c}</option>
         )
       }
       </select>
-
-    <XYPlot xType="ordinal" height={200} width={400}>
-      <XAxis
-        attr="x"
-        attrAxis="y"
-        orientation="bottom"
-      />
-      <YAxis
-        attr="y"
-        attrAxis="x"
-        orientation="left"
-      />
-      <VerticalBarSeries
-        data={this.state.data}
-        style={{}}
-      />
-  </XYPlot>
+      <div>
+        <button onClick={(e) => this.handleQuery(e)}>New Query</button>
+      </div>
+      <XYPlot xType="ordinal" height={200} width={300}>
+        <XAxis
+          attr="x"
+          attrAxis="y"
+          orientation="bottom"
+        />
+        <YAxis
+          attr="y"
+          attrAxis="x"
+          orientation="left"
+        />
+        <VerticalBarSeries
+          data={this.state.data}
+          style={{}}
+        />
+      </XYPlot>
 
        </div>
     );
