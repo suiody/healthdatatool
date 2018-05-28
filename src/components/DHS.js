@@ -224,7 +224,6 @@ handleQuery(e){
     let years = this.state.years;
     let indicators = this.state.indicators;
     let characteristics = this.state.characteristics;
-    let ind = this.state.selectedIndicator;
 
     const axisStyle = {
       ticks: {
@@ -291,18 +290,19 @@ handleQuery(e){
               title={this.state.selectedIndicator}
               xType="ordinal"
               height={300} width={500}
-              margin={{ bottom: 200, right: 100, left: 100 }}
+              margin={{ bottom: 220, right: 100, left: 100 }}
+              style={{fontSize: 'medium', position: 'middle'}}
               >
               <XAxis
               tickFormat={v => `${v}`}
               tickLabelAngle={-70}
-              tickPadding={10}
+              tickPadding={15}
               style={axisStyle}
               />
               <YAxis />
               <VerticalBarSeries
                 data={this.state.data}
-                style={{}}
+                style={{fontSize: 'medium'}}
               />
             </XYPlot>
       </div>
