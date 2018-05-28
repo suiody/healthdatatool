@@ -4,6 +4,7 @@ import axios from 'axios';
 import './react_plot_style.css';
 import {XYPlot, XAxis, YAxis,VerticalBarSeries} from 'react-vis';
 
+
 class Search extends Component {
 
   constructor(props) {
@@ -72,14 +73,14 @@ class Search extends Component {
  }
  // store the selected country from dropdown menu in state
   handleCountry(e){
-    var selectedCountry = e.target.value;
     this.state.countries.shift(); // get rid of the placeholder element
+    var selectedCountry = e.target.value;
     var result = this.state.countries.filter((co) =>
       co.CountryName === selectedCountry
    );
     var strCountry = result[0].DHS_CountryCode.toString();
     this.setState({ strCountry: strCountry, selectedCountry: selectedCountry });
-    this.setState({ isCountryDisabled: true, isYearDisabled: false});
+    this.setState({ isCountryDisabled: true});
     this.getSurveyYears(strCountry);
    }
 
@@ -93,6 +94,7 @@ getSurveyYears(strCountry){
         years: response.data.Data
       });
     });
+    this.setState({ isYearDisabled: false });
 }
 // handle survey year selection; extract surveyId and store selectedYear in state
 handleYear(e){
@@ -104,7 +106,7 @@ handleYear(e){
    );
    var strSurveyYear = result[0].SurveyId;
    this.setState({ strSurveyYear: strSurveyYear });
-   this.setState({ isYearDisabled: true, isIndicatorDisabled: false });
+   this.setState({ isYearDisabled: true });
    this.getIndicators(this.state.strCountry,strSurveyYear);
 }
 
@@ -119,6 +121,7 @@ handleYear(e){
        indicators: response.data.Data
      });
    });
+   this.setState({ isIndicatorDisabled: false });
  }
 
 // store the selected indicator in state
@@ -131,7 +134,7 @@ handleYear(e){
    var strIndicator = result[0].IndicatorId;
    this.setState({selectedIndicator: selectedIndicator});
    this.setState({IndicatorId: e.target.value});
-   this.setState({ isIndicatorDisabled: true, isCharacteristicDisabled: false });
+   this.setState({ isIndicatorDisabled: true });
    this.getCharacteristics(this.state.strCountry,this.state.strSurveyYear,strIndicator);
  }
 
@@ -169,7 +172,7 @@ handleYear(e){
       console.log("arrData", arrData);
       // populate the data characteristics drop down menu
       var listCharGroups = Object.keys(arrData);
-        this.setState({characteristics: listCharGroups});
+        this.setState({characteristics: listCharGroups,isCharacteristicDisabled: false});
     });
   }
 
@@ -266,7 +269,7 @@ handleQuery(e){
         <button onClick={(e) => this.handleQuery(e)}>New Query</button>
       </div>
 
-      <XYPlot xType="ordinal" height={300} width={400}>
+      <XYPlot xType="ordinal" height={300} width={400} xDistance={200}>
         <XAxis
           attr="x"
           attrAxis="y"
