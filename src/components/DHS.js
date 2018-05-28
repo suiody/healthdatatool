@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './DHS.css';
 import axios from 'axios';
+import NavBar from './NavBar';
 import './react_plot_style.css';
 import {XYPlot, XAxis, YAxis,VerticalBarSeries} from 'react-vis';
 
@@ -223,65 +224,72 @@ handleQuery(e){
     let characteristics = this.state.characteristics;
 
     return (
-   <div className="container-fluid">
-       <p className="searchTitles">Countries:</p>
-       <select className="dropDown" onChange={(e) => this.handleCountry(e)} value={this.state.selectedCountry} disabled={this.state.isCountryDisabled}>
-        {
-          this.state.countries.map((country) =>
-           <option key={this.getKey()}>{country.CountryName ? country.CountryName : "Select a country"}</option>
-          )
-       }
-     );
-       </select>
+<div>
+  <NavBar />
+     <div className="container-fluid">
+       <div className="instructionsDiv">
+         <ol className="instructions">
+            <li><strong>Select a country</strong> from the first dropdown.</li>
+            <li><strong>Select a survey year</strong> from the second dropdown.</li>
+            <li><strong>Select an indicator</strong> from the third dropdown.</li>
+            <li><strong>Select a category</strong> to graph from the forth dropdown. <br/>To change to a different category, simply select a new category from the dropdown.</li>
+            <li>To perform a new query, click on the <strong>"new query"</strong> button.</li>
+         </ol>
+        </div>
 
-       <p className="searchTitles">Survey Years:</p>
-      <select className="dropDown" onChange={(e) => this.handleYear(e)} value={this.state.selectedYear} disabled={this.state.isYearDisabled}>
-         {
-            this.state.years.map((year) =>
-              <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : "Select a year"}</option>
+         <select className="dropDown" onChange={(e) => this.handleCountry(e)} value={this.state.selectedCountry} disabled={this.state.isCountryDisabled}>
+          {
+            this.state.countries.map((country) =>
+             <option key={this.getKey()}>{country.CountryName ? country.CountryName : "Select a country"}</option>
             )
-         }
-      </select>
-      <p className="searchTitles">Indicators:</p>
-      <select className="dropDown" onChange={(e) => this.handleIndicator(e)} value={this.state.selectedIndicator} disabled={this.state.isIndicatorDisabled}>
-        {
-          this.state.indicators.map((ind) =>
-            <option key={this.getKey()}>{ind.Label ? ind.Label : "Select an indicator"}</option>
-          )
-        }
-      </select>
-      <p className="searchTitles">Characteristics: </p>
-      <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic} disabled={this.state.isCharacteristicDisabled}>
-      {
-        this.state.characteristics.map((c) =>
-          <option key={this.getKey()}>{this.state.characteristics ? c : "Select a category"}</option>
-        )
-      }
-      </select>
-      <div>
-        <button onClick={(e) => this.handleQuery(e)}>New Query</button>
-      </div>
+          }
+         </select>
+          <select className="dropDown" onChange={(e) => this.handleYear(e)} value={this.state.selectedYear} disabled={this.state.isYearDisabled}>
+             {
+                this.state.years.map((year) =>
+                  <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : "Select a year"}</option>
+                )
+             }
+        </select>
+        <select className="dropDown" onChange={(e) => this.handleIndicator(e)}     value={this.state.selectedIndicator} disabled={this.state.isIndicatorDisabled}>
+            {
+              this.state.indicators.map((ind) =>
+                <option key={this.getKey()}>{ind.Label ? ind.Label : "Select an indicator"}</option>
+              )
+            }
+        </select>
+          <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic} disabled={this.state.isCharacteristicDisabled}>
+          {
+            this.state.characteristics.map((c) =>
+              <option key={this.getKey()}>{this.state.characteristics ? c : "Select a category"}</option>
+            )
+          }
+        </select>
+        <div>
+          <button onClick={(e) => this.handleQuery(e)}>New Query</button>
+        </div>
 
-      <XYPlot xType="ordinal" height={300} width={400} xDistance={200}>
-        <XAxis
-          attr="x"
-          attrAxis="y"
-          orientation="bottom"
-        />
-        <YAxis
-          attr="y"
-          attrAxis="x"
-          orientation="left"
-        />
-        <VerticalBarSeries
-          data={this.state.data}
-          style={{}}
-        />
-      </XYPlot>
+        <XYPlot xType="ordinal" height={300} width={300} xDistance={300}>
+          <XAxis
+            attr="x"
+            attrAxis="y"
+            orientation="bottom"
+          />
+          <YAxis
+            attr="y"
+            attrAxis="x"
+            orientation="left"
+          />
+          <VerticalBarSeries
+            data={this.state.data}
+            style={{}}
+          />
+        </XYPlot>
 
-       </div>
-    );
-  }
+    </div>
+  </div>
+      );
+    }
 
 }
 

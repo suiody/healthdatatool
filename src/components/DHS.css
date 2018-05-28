@@ -1,18 +1,24 @@
 .dropDown {
   display: inline-block;
-  max-width: 125px;
-  min-width: 125px;
+  max-width: 175px;
+  min-width: 175px;
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
   position: relative;
 }
 
-.searchTitles {
-
-}
-
-.graphButton {
-  margin: 10px;
-}
-
-.instructions{
+.instructions {
+  display: inline-block;
+  float: left;
   text-align: left;
+  font-family: Arial, Verdana, Courier;
+  font-size: 1.2rem;
+}
+
+.instructionsDiv {
+  margin-top: 5rem;
+}
+.graphButton {
+  margin: 1rem 1rem;
 }
