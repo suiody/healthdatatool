@@ -24,6 +24,11 @@
 .instructionsDiv {
   margin-top: 5rem;
 }
+
 .graphButton {
   margin: 1rem 1rem;
+}
+
+.plotDiv{
+  margin: 2rem 2rem;
 }
