@@ -258,7 +258,7 @@ handleQuery(e){
       <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic} disabled={this.state.isCharacteristicDisabled}>
       {
         this.state.characteristics.map((c) =>
-          <option key={this.getKey()}>{c === "0" ? "": c}</option>
+          <option key={this.getKey()}>{c === "" ? "": c}</option>
         )
       }
       </select>
