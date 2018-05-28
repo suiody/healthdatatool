@@ -73,7 +73,6 @@ class Search extends Component {
  }
  // store the selected country from dropdown menu in state
   handleCountry(e){
-    this.state.countries.shift(); // get rid of the placeholder element
     var selectedCountry = e.target.value;
     var result = this.state.countries.filter((co) =>
       co.CountryName === selectedCountry
@@ -179,7 +178,6 @@ handleYear(e){
 // store selected characterstic in state
 handleCharacteristic(e){
   var selectedCharacteristic = e.target.value;
-  this.state.characteristics.shift();
   this.setState({selectedCharacteristic: selectedCharacteristic});
   var strCharGroup = selectedCharacteristic;
   this.graphData(strCharGroup);
@@ -215,19 +213,18 @@ handleQuery(e){
 }
 
   render(){
-    //add a placeholder for dropdown for first menu item
-    // within render, placeholder gets filled with a message.
+    //add a placeholder for dropdown for first menu item so we can select the first element
     let tmpCountries = this.state.countries;
-    let countries = tmpCountries.unshift("0");
+    let countries = tmpCountries.unshift("");
 
     let tmpYears = this.state.years;
-    let years = tmpYears.unshift("0");
+    let years = tmpYears.unshift("");
 
     let tmpIndicators = this.state.indicators;
-    let indicators = tmpIndicators.unshift("0");
+    let indicators = tmpIndicators.unshift("");
 
     let tmpCharacteristics = this.state.characteristics;
-    let characteristics = tmpCharacteristics.unshift("0");
+    let characteristics = tmpCharacteristics.unshift("");
 
     return (
    <div className="container-fluid">
@@ -235,7 +232,7 @@ handleQuery(e){
        <select className="dropDown" onChange={(e) => this.handleCountry(e)} value={this.state.selectedCountry} disabled={this.state.isCountryDisabled}>
         {
           this.state.countries.map((country) =>
-           <option key={this.getKey()}>{country.CountryName ? country.CountryName : "Select a country"}</option>
+           <option key={this.getKey()}>{country.CountryName ? country.CountryName : ""}</option>
           )
        }
      );
@@ -245,7 +242,7 @@ handleQuery(e){
       <select className="dropDown" onChange={(e) => this.handleYear(e)} value={this.state.selectedYear} disabled={this.state.isYearDisabled}>
          {
             this.state.years.map((year) =>
-              <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : "Select a year"}</option>
+              <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : ""}</option>
             )
          }
       </select>
@@ -253,7 +250,7 @@ handleQuery(e){
       <select className="dropDown" onChange={(e) => this.handleIndicator(e)} value={this.state.selectedIndicator} disabled={this.state.isIndicatorDisabled}>
         {
           this.state.indicators.map((ind) =>
-            <option key={this.getKey()}>{ind.Label ? ind.Label : "Select an indicator"}</option>
+            <option key={this.getKey()}>{ind.Label ? ind.Label : ""}</option>
           )
         }
       </select>
@@ -261,7 +258,7 @@ handleQuery(e){
       <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic} disabled={this.state.isCharacteristicDisabled}>
       {
         this.state.characteristics.map((c) =>
-          <option key={this.getKey()}>{c === "0" ? "Select a category": c}</option>
+          <option key={this.getKey()}>{c === "0" ? "": c}</option>
         )
       }
       </select>
