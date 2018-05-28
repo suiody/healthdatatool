@@ -282,7 +282,6 @@ handleQuery(e){
           <YAxis />
           <VerticalBarSeries
             data={this.state.data}
-            style={{}}
           />
         </XYPlot>
 
