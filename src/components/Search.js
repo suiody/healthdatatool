@@ -10,14 +10,15 @@ class Search extends Component {
   constructor(props) {
    super(props)
    this.state = {
-     countries: [], //  countries to populate dropdown menu
-     years: [], // suvey years to populate dropdown menu
-     indicators: [], // indicators to populate dropdown menu
+     countries: ["Select a country"], //  countries to populate dropdown menu
+     years: ["Select a year"], // suvey years to populate dropdown menu
+     indicators: ["Select an indicator"], // indicators to populate dropdown menu
      selectedCountry: [], // current country selected from dropdown
      selectedYear: [], // current year selected from dropdown
      selectedIndicator: [], //current indicator selected from dropdown,
      characteristics: [], // holds characteristic groups for the selected indicator,
      selectedCharacteristic: [], // selected characteristic
+     listCharGroups: ["Select a category"],
      arrData: {}, // stores formatted characterstics/values for graphing
      strCountry: '', // keeps track of the countryId for DHS query
      strSurveyYear: '', // keeps track of surveyId for DHS query
@@ -65,7 +66,7 @@ class Search extends Component {
    try {
     let response = await axiosInstance.get('/countries')
     this.setState({
-      countries: response.data.Data
+      countries: this.state.countries.concat(response.data.Data)
     })
   } catch(err){
     console.log(err);
@@ -74,6 +75,7 @@ class Search extends Component {
  // store the selected country from dropdown menu in state
   handleCountry(e){
     var selectedCountry = e.target.value;
+    console.log("countries array",this.state.countries);
     var result = this.state.countries.filter((co) =>
       co.CountryName === selectedCountry
    );
@@ -90,7 +92,7 @@ getSurveyYears(strCountry){
     axios.get(apiURL)
     .then(response => {
       this.setState({
-        years: response.data.Data
+        years: this.state.years.concat(response.data.Data)
       });
     });
     this.setState({ isYearDisabled: false });
@@ -117,7 +119,7 @@ handleYear(e){
    axios.get(apiURL)
    .then(response => {
      this.setState({
-       indicators: response.data.Data
+       indicators: this.state.indicators.concat(response.data.Data)
      });
    });
    this.setState({ isIndicatorDisabled: false });
@@ -167,11 +169,12 @@ handleYear(e){
            arrData[value.CharacteristicCategory][value.CharacteristicLabel][value.ByVariableLabel] = value.Value; }
          }
       });
-      this.setState({arrData: arrData});
+      this.setState({ arrData: arrData });
       console.log("arrData", arrData);
       // populate the data characteristics drop down menu
-      var listCharGroups = Object.keys(arrData);
-        this.setState({characteristics: listCharGroups,isCharacteristicDisabled: false});
+      var listCharGroups = this.state.listCharGroups.concat(Object.keys(arrData));
+
+        this.setState({ characteristics: listCharGroups,isCharacteristicDisabled: false});
     });
   }
 
@@ -209,22 +212,17 @@ graphData(strCharGroup){
 
 handleQuery(e){
  // make the menu drop downs available again for a new query
- this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [] });
+ this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], countries:["Select a country"], years: ["Select a year"], indicators: ["Select an indicator"], listCharGroups: ["Select a category"],selectedCharacteristic: [] });
+ this.getCountries();
 }
 
   render(){
     //add a placeholder for dropdown for first menu item so we can select the first element
-    let tmpCountries = this.state.countries;
-    let countries = tmpCountries.unshift("");
+    let countries = this.state.countries;
+    let years = this.state.years;
+    let indicators = this.state.indicators;
+    let characteristics = this.state.characteristics;
 
-    let tmpYears = this.state.years;
-    let years = tmpYears.unshift("");
-
-    let tmpIndicators = this.state.indicators;
-    let indicators = tmpIndicators.unshift("");
-
-    let tmpCharacteristics = this.state.characteristics;
-    let characteristics = tmpCharacteristics.unshift("");
 
     return (
    <div className="container-fluid">
@@ -232,7 +230,7 @@ handleQuery(e){
        <select className="dropDown" onChange={(e) => this.handleCountry(e)} value={this.state.selectedCountry} disabled={this.state.isCountryDisabled}>
         {
           this.state.countries.map((country) =>
-           <option key={this.getKey()}>{country.CountryName ? country.CountryName : ""}</option>
+           <option key={this.getKey()}>{country.CountryName ? country.CountryName : "Select a country"}</option>
           )
        }
      );
@@ -242,7 +240,7 @@ handleQuery(e){
       <select className="dropDown" onChange={(e) => this.handleYear(e)} value={this.state.selectedYear} disabled={this.state.isYearDisabled}>
          {
             this.state.years.map((year) =>
-              <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : ""}</option>
+              <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : "Select a year"}</option>
             )
          }
       </select>
@@ -250,7 +248,7 @@ handleQuery(e){
       <select className="dropDown" onChange={(e) => this.handleIndicator(e)} value={this.state.selectedIndicator} disabled={this.state.isIndicatorDisabled}>
         {
           this.state.indicators.map((ind) =>
-            <option key={this.getKey()}>{ind.Label ? ind.Label : ""}</option>
+            <option key={this.getKey()}>{ind.Label ? ind.Label : "Select an indicator"}</option>
           )
         }
       </select>
@@ -258,7 +256,7 @@ handleQuery(e){
       <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic} disabled={this.state.isCharacteristicDisabled}>
       {
         this.state.characteristics.map((c) =>
-          <option key={this.getKey()}>{c === "" ? "": c}</option>
+          <option key={this.getKey()}>{c ? c : "Select a category"}</option>
         )
       }
       </select>
