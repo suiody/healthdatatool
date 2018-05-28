@@ -3,7 +3,7 @@ import './DHS.css';
 import axios from 'axios';
 import NavBar from './NavBar';
 import './react_plot_style.css';
-import {XYPlot, XAxis, YAxis,VerticalBarSeries} from 'react-vis';
+import {XYPlot,XAxis, YAxis,VerticalBarSeries} from 'react-vis';
 
 
 class DHS extends Component {
@@ -191,11 +191,13 @@ graphData(strCharGroup){
   var arrSeriesNames = [];
   var arrSeriesValues = [];
   var arrData = this.state.arrData;
-  xAxisCategories = Object.keys(arrData[strCharGroup]);
-  arrSeriesNames = Object.values(arrData[strCharGroup]);
-  arrSeriesNames.forEach(function(series){
-     arrSeriesValues.push(Object.values(series));
-  });
+    if (arrData[strCharGroup]){
+    xAxisCategories = Object.keys(arrData[strCharGroup]);
+    arrSeriesNames = Object.values(arrData[strCharGroup]);
+    arrSeriesNames.forEach(function(series){
+       arrSeriesValues.push(Object.values(series));
+    });
+  }
   var data = [];
   var yAxisValues = [].concat.apply([], arrSeriesValues);
 
@@ -204,7 +206,7 @@ graphData(strCharGroup){
     var key = xAxisCategories[i].toString();
     var value = yAxisValues[i];
     var x, y;
-    data.push({x: key, y: value});
+    data.push({x: key, y: value, xOffset: 5, rotation: 34});
   }
   console.log("data", data);
   this.setState({data: data});
@@ -269,17 +271,9 @@ handleQuery(e){
           <button onClick={(e) => this.handleQuery(e)}>New Query</button>
         </div>
 
-        <XYPlot xType="ordinal" height={300} width={300} xDistance={300}>
-          <XAxis
-            attr="x"
-            attrAxis="y"
-            orientation="bottom"
-          />
-          <YAxis
-            attr="y"
-            attrAxis="x"
-            orientation="left"
-          />
+        <XYPlot xType="ordinal" height={300} width={400} margin={{bottom: 100}}>
+          <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70}/>
+          <YAxis />
           <VerticalBarSeries
             data={this.state.data}
             style={{}}
