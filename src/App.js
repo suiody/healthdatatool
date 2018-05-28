@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 // import { Route, Router, BrowserRouter } from 'react-router-dom';
 import { Route } from 'react-router-dom';
-import Search from './components/Search';
+import About from './components/About';
+import DHS from './components/DHS';
 import WorldBank from './components/WorldBank';
 import './App.css';
 
@@ -11,12 +12,10 @@ class App extends Component {
 
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Health Data Tool</h1>
-        </header>
         <main>
-         <Route exact path='/' component={Search}/>
-         <Route exact path='/' component={WorldBank}/>
+        <Route exact path='/' component={About}/>
+         <Route exact path='/dhs' component={DHS}/>
+         <Route exact path='/worldbank' component={WorldBank}/>
         </main>
       </div>
     );

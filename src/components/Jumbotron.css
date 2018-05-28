@@ -1,0 +1,9 @@
+.jumbotron {
+ background-image: url(../images/children.jpg);
+ background-position: center center;
+ background-repeat: no-repeat;
+ background-size: 100%;
+ color: white;
+ text-shadow: 2px 2px gray;
+ margin-top: 0;
+}

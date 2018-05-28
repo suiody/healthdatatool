@@ -1,0 +1,18 @@
+.dropDown {
+  display: inline-block;
+  max-width: 125px;
+  min-width: 125px;
+  position: relative;
+}
+
+.searchTitles {
+
+}
+
+.graphButton {
+  margin: 10px;
+}
+
+.instructions{
+  text-align: left;
+}
