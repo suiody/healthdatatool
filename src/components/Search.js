@@ -23,9 +23,10 @@ class Search extends Component {
      strIndicator: '', // keeps track of indicatorId for DHS query
      strCharGroup: '', // keeps track of current characteristic group to map
      data: [], // data values for graphing
-     isCountryDisabled: false,
-     isYearDisabled: false,
-     isIndicatorDisabled: false
+     isCountryDisabled: false, // by default, only make country dropdown visible
+     isYearDisabled: true, // will be enabled after country selection or new query
+     isIndicatorDisabled: true, // will be enabled after year selection or new query
+     isCharacteristicDisabled: true // will be enabled after indicator selection
    }
    this.keyCount = 0;
    this.valueCount = 0;
@@ -78,7 +79,7 @@ class Search extends Component {
    );
     var strCountry = result[0].DHS_CountryCode.toString();
     this.setState({ strCountry: strCountry, selectedCountry: selectedCountry });
-    this.setState({ isCountryDisabled: true });
+    this.setState({ isCountryDisabled: true, isYearDisabled: false});
     this.getSurveyYears(strCountry);
    }
 
@@ -103,7 +104,7 @@ handleYear(e){
    );
    var strSurveyYear = result[0].SurveyId;
    this.setState({ strSurveyYear: strSurveyYear });
-   this.setState({ isYearDisabled: true });
+   this.setState({ isYearDisabled: true, isIndicatorDisabled: false });
    this.getIndicators(this.state.strCountry,strSurveyYear);
 }
 
@@ -130,7 +131,7 @@ handleYear(e){
    var strIndicator = result[0].IndicatorId;
    this.setState({selectedIndicator: selectedIndicator});
    this.setState({IndicatorId: e.target.value});
-   this.setState({ isIndicatorDisabled: true });
+   this.setState({ isIndicatorDisabled: true, isCharacteristicDisabled: false });
    this.getCharacteristics(this.state.strCountry,this.state.strSurveyYear,strIndicator);
  }
 
@@ -202,12 +203,12 @@ graphData(strCharGroup){
     data.push({x: key, y: value});
   }
   console.log("data", data);
- this.setState({data: data});
+  this.setState({data: data});
 }
 
 handleQuery(e){
  // make the menu drop downs available again for a new query
- this.setState({isCountryDisabled: false, isYearDisabled: false, isIndicatorDisabled: false, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [] });
+ this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [] });
 }
 
   render(){
@@ -254,7 +255,7 @@ handleQuery(e){
         }
       </select>
       <p className="searchTitles">Characteristics: </p>
-      <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic}>
+      <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic} disabled={this.state.isCharacteristicDisabled}>
       {
         this.state.characteristics.map((c) =>
           <option key={this.getKey()}>{c === "0" ? "Select a category": c}</option>
@@ -264,7 +265,8 @@ handleQuery(e){
       <div>
         <button onClick={(e) => this.handleQuery(e)}>New Query</button>
       </div>
-      <XYPlot xType="ordinal" height={200} width={300}>
+
+      <XYPlot xType="ordinal" height={300} width={400}>
         <XAxis
           attr="x"
           attrAxis="y"
