@@ -11,8 +11,6 @@ class WorldBank extends Component {
  }
 
  componentDidMount(){
-   // this.getIndicators();
-   // this.getTopics();
  }
 
  getIndicators(){
@@ -40,7 +38,7 @@ getTopics(){
 render(){
   return(
     <div>
-  
+     World Bank query will be added here.
     </div>
   );
    }

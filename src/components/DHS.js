@@ -66,9 +66,13 @@ class DHS extends Component {
    })
    try {
     let response = await axiosInstance.get('/countries')
-    this.setState({
-      countries: this.state.countries.concat(response.data.Data)
-    })
+    if(response.status === 200){
+      this.setState({
+        countries: this.state.countries.concat(response.data.Data)
+      })
+    } else {
+      window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab")
+    }
   } catch(err){
     console.log(err);
   }
