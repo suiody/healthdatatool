@@ -71,7 +71,7 @@ class DHS extends Component {
         countries: this.state.countries.concat(response.data.Data)
       })
     } else {
-      window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab")
+    return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
     }
   } catch(err){
     console.log(err);
@@ -96,9 +96,13 @@ getSurveyYears(strCountry){
     var apiURL =  gAPIDomain + "surveys/" + strCountry + "?surveyType=DHS";
     axios.get(apiURL)
     .then(response => {
+      if(response.status === 200){
       this.setState({
         years: this.state.years.concat(response.data.Data)
       });
+    } else {
+      return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
+    }
     });
     this.setState({ isYearDisabled: false });
 }
@@ -123,9 +127,13 @@ handleYear(e){
    var apiURL = gAPIDomain + "indicators?countryIds=" + strCountry + "&surveyIds=" + strSurveyYear + "&perpage=1000&f=json";
    axios.get(apiURL)
    .then(response => {
-     this.setState({
-       indicators: this.state.indicators.concat(response.data.Data)
-     });
+      if(response.status === 200){
+       this.setState({
+         indicators: this.state.indicators.concat(response.data.Data)
+       });
+   } else {
+     return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
+   }
    });
    this.setState({ isIndicatorDisabled: false });
  }
@@ -155,8 +163,12 @@ handleYear(e){
     console.log("apiURL", apiURL);
     axios.get(apiURL)
     .then(response => {
+      if(response.status === 200){
       var arrData = {};
       var inputData = response.data.Data;
+    } else {
+      return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
+    }
    // format the characteristic labels for charting
      inputData.forEach(function(value, index) {
        if(!arrData[value.CharacteristicCategory]){
@@ -179,7 +191,7 @@ handleYear(e){
       // populate the data characteristics drop down menu
       var listCharGroups = this.state.listCharGroups.concat(Object.keys(arrData));
         this.setState({ characteristics: listCharGroups, isCharacteristicDisabled: false});
-    });
+      });
   }
 
 // store selected characterstic in state
