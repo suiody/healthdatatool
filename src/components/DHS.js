@@ -74,6 +74,8 @@ class DHS extends Component {
   } catch(err){
     console.log(err);
     window.alert("There was a problem accessing the DHS database. Please try again later or search the archived data under the archives tab");
+    window.location = "/";
+    return
   }
  }
  // store the selected country from dropdown menu in state
@@ -106,6 +108,8 @@ async getSurveyYears(strCountry){
     } catch(err){
      console.log(err);
      window.alert("There was a problem accessing the DHS database. Please try again later or search the archived data under the archives tab");
+     window.location = "/";
+     return
     }
     this.setState({ isYearDisabled: false });
 }
@@ -141,6 +145,8 @@ handleYear(e){
    } catch(err){
      console.log(err);
      return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
+     window.location = "/";
+     return
    }
    this.setState({ isIndicatorDisabled: false });
  }
@@ -267,6 +273,7 @@ handleQuery(e){
      <div className="container-fluid">
        <div className="instructionsDiv">
          <ol className="instructions">
+            <li><strong>Please note</strong>: This data is being queried from the DHS database based on your selections from the dropdown menus. When the data is available, the dropdown menu will become active.</li>
             <li><strong>Select a country</strong> from the first dropdown.</li>
             <li><strong>Select a survey year</strong> from the second dropdown.</li>
             <li><strong>Select an indicator</strong> from the third dropdown.</li>

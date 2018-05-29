@@ -33,7 +33,9 @@ async getInfantMortality(){
    }
  } catch(err){
    console.log(err);
-   window.alert("There was a problem connecting to the archives. Please try again later.")
+   window.alert("There was a problem connecting to the archives. Please try again later, or search one of the other databases.");
+   window.location = "/";
+   return
  }
  this.getChildMortality();
 }
@@ -54,7 +56,9 @@ async getChildMortality(){
    }
  } catch(err){
    console.log(err);
-   window.alert("There was a problem connecting to the archives. Please try again later.")
+   window.alert("There was a problem connecting to the archives. Please try again later, or search one of the other databases.")
+   window.location = "/";
+   return
  }
 }
 
