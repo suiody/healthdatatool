@@ -70,11 +70,10 @@ class DHS extends Component {
       this.setState({
         countries: this.state.countries.concat(response.data.Data)
       })
-    } else {
-    return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
     }
   } catch(err){
     console.log(err);
+    window.alert("There was a problem accessing the DHS database. Please try again later or search the archived data under the archives tab");
   }
  }
  // store the selected country from dropdown menu in state
@@ -91,19 +90,23 @@ class DHS extends Component {
    }
 
 // query DHS API survey years based on country selection
-getSurveyYears(strCountry){
+async getSurveyYears(strCountry){
     var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/"
     var apiURL =  gAPIDomain + "surveys/" + strCountry + "?surveyType=DHS";
-    axios.get(apiURL)
-    .then(response => {
+    var axiosInstance = axios.create({
+    baseURL: 'https://api.dhsprogram.com/rest/dhs/'
+    })
+    try {
+    let response = await axiosInstance.get(apiURL)
       if(response.status === 200){
       this.setState({
         years: this.state.years.concat(response.data.Data)
-      });
-    } else {
-      return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
+      })
+     }
+    } catch(err){
+     console.log(err);
+     window.alert("There was a problem accessing the DHS database. Please try again later or search the archived data under the archives tab");
     }
-    });
     this.setState({ isYearDisabled: false });
 }
 // handle survey year selection; extract surveyId and store selectedYear in state
@@ -125,16 +128,20 @@ handleYear(e){
    // Create URL to obtain indicators. Specify 1000 rows to get maximum results.
    var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/"
    var apiURL = gAPIDomain + "indicators?countryIds=" + strCountry + "&surveyIds=" + strSurveyYear + "&perpage=1000&f=json";
-   axios.get(apiURL)
-   .then(response => {
-      if(response.status === 200){
-       this.setState({
-         indicators: this.state.indicators.concat(response.data.Data)
-       });
-   } else {
+   var axiosInstance = axios.create({
+    baseURL: 'https://api.dhsprogram.com/rest/dhs/'
+   })
+   try {
+   let response = await axiosInstance.get(apiURL)
+     if(response.status === 200){
+     this.setState({
+       indicators: this.state.indicators.concat(response.data.Data)
+     })
+   }
+   } catch(err){
+     console.log(err);
      return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
    }
-   });
    this.setState({ isIndicatorDisabled: false });
  }
 
