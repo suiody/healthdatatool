@@ -250,19 +250,6 @@ handleQuery(e){
 
   render(){
 
-    const axisStyle = {
-      ticks: {
-        fontSize: '12px',
-        color: '#333'
-      },
-      title: {
-        fontSize: '16px',
-        color: '#333',
-        fontWeight: 'bold',
-        position: 'middle'
-      }
-    };
-
     return (
 <div>
   <NavBar />
@@ -310,7 +297,7 @@ handleQuery(e){
           <button onClick={(e) => this.handleQuery(e)}>New Query</button>
         </div>
 
-        <XYPlot xType="ordinal" height={300} width={400} margin={{bottom: 100}}>
+        <XYPlot xType="ordinal" height={300} width={400} xDistance={100} margin={{bottom: 100}}>
           <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70}
           style={{
             line: {stroke: '#ADDDE1'},
@@ -318,7 +305,8 @@ handleQuery(e){
             text: {stroke: 'none', fill: '#6b6b76', fontWeight: 700}
           }}
           />
-          <YAxis />
+          <YAxis
+          />
           <VerticalBarSeries
             data={this.state.data}
           />
