@@ -243,16 +243,10 @@ graphData(strCharGroup){
 
 handleQuery(e){
  // make the menu drop downs available again for a new query
- this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], countries:["Select a country"], years: ["Select a year"], indicators: ["Select an indicator"], listCharGroups: ["Select a category"],selectedCharacteristic: [] });
- this.getCountries();
+ this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [] });
 }
 
   render(){
-    //add a placeholder for dropdown for first menu item so we can select the first element
-    let countries = this.state.countries;
-    let years = this.state.years;
-    let indicators = this.state.indicators;
-    let characteristics = this.state.characteristics;
 
     const axisStyle = {
       ticks: {
