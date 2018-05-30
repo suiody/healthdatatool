@@ -249,7 +249,8 @@ handleQuery(e){
 }
 
   render(){
-
+    var date = new Date();
+    var dateStr = date.toISOString().slice(0,10);
     return (
 <div>
   <NavBar />
@@ -260,7 +261,7 @@ handleQuery(e){
             <li><strong>Select a country</strong> from the first dropdown.</li>
             <li><strong>Select a survey year</strong> from the second dropdown.</li>
             <li><strong>Select an indicator</strong> from the third dropdown.</li>
-            <li><strong>Select a category</strong> to graph from the forth dropdown. <br/>To change to a different category, simply select a new category from the dropdown.</li>
+            <li><strong>Select a category</strong> to graph from the fourth dropdown. <br/>To change to a different category, simply select a new category from the dropdown.</li>
             <li>To perform a new query, click on the <strong>"new query"</strong> button.</li>
          </ol>
         </div>
@@ -299,7 +300,7 @@ handleQuery(e){
 
       <div className="plotBox">
       <h6 className="plotTitle">{this.state.selectedIndicator} {this.state.selectedCountry}</h6>
-        <XYPlot xType="ordinal" height={300} width={400} margin={{bottom: 200, left: 60}}>
+        <XYPlot xType="ordinal" height={400} width={500} margin={{bottom: 200, left: 60}}>
           <XAxis tickFormat={v => `${v}`} tickPadding={20} tickLabelAngle={-60}
           style={{ fontSize: 'small'}}
           />
@@ -310,6 +311,7 @@ handleQuery(e){
             data={this.state.data}
           />
         </XYPlot>
+          <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
       </div>
 
     </div>
