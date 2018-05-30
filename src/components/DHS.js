@@ -243,7 +243,9 @@ graphData(strCharGroup){
 
 handleQuery(e){
  // make the menu drop downs available again for a new query
- this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [] });
+ var tmp = this.state.countries;
+ tmp.unshift("Select a country");
+ this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: ["Select a year"], indicators: ["Select an indicator"], characteristics: ["Select a category"] });
 }
 
   render(){
