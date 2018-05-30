@@ -225,7 +225,7 @@ populateData(strIndicator){
 
  handleQuery(e){
   // make the menu drop downs available again for a new query
-  this.setState({isCountryDisabled: false, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [] });
+  this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"] });
  }
 
  render (){
@@ -259,9 +259,8 @@ populateData(strIndicator){
     <button onClick={(e) => this.handleQuery(e)}>New Query</button>
   </div>
 
-
-  <XYPlot xType="ordinal" title={this.state.selectedIndicator} height={300} width={300} margin={{bottom: 100}}>
-    <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70} tickPadding={20} title="survey year" position="end"
+  <XYPlot xType="ordinal" height={300} width={300} margin={{bottom: 100}}>
+    <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70} tickPadding={20}
     style={{
       line: {stroke: '#ADDDE1'},
       ticks: {stroke: '#ADDDE1'},
