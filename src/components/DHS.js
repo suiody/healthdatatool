@@ -245,7 +245,7 @@ handleQuery(e){
  // make the menu drop downs available again for a new query
  var tmp = this.state.countries;
  tmp.unshift("Select a country");
- this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: ["Select a year"], indicators: ["Select an indicator"], characteristics: ["Select a category"] });
+ this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: ["Select a year"], indicators: ["Select an indicator"], characteristics: ["Select a category"], data: [] });
 }
 
   render(){
@@ -297,22 +297,20 @@ handleQuery(e){
           <button onClick={(e) => this.handleQuery(e)}>New Query</button>
         </div>
 
-        <XYPlot xType="ordinal" height={300} width={400} margin={{bottom: 200, left: 50}}>
+      <div className="plotBox">
+      <h6 className="plotTitle">{this.state.selectedIndicator} {this.state.selectedCountry}</h6>
+        <XYPlot xType="ordinal" height={300} width={400} margin={{bottom: 200, left: 60}}>
           <XAxis tickFormat={v => `${v}`} tickPadding={20} tickLabelAngle={-60}
-          style={{
-            line: {stroke: '#ADDDE1'},
-            ticks: {stroke: '#ADDDE1'},
-            text: {stroke: 'none', fill: '#6b6b76', fontWeight: 700}
-          }}
+          style={{ fontSize: 'small'}}
           />
           <YAxis
-          title={this.state.selectedIndicator}
-          style={{fontSize: 'medium'}}
+          style={{fontSize: 'small'}} tickPadding={20}
           />
           <VerticalBarSeries
             data={this.state.data}
           />
         </XYPlot>
+      </div>
 
     </div>
   </div>

@@ -1,1 +1,11 @@
+.plotBox {
+  display: relative;
+  margin: 2rem 2rem;
+}
 
+.plotTitle {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}

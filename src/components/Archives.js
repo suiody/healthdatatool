@@ -226,7 +226,7 @@ populateData(strIndicator){
 
  handleQuery(e){
   // make the menu drop downs available again for a new query
-  this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"] });
+  this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"], data: [] });
  }
 
  render (){
@@ -271,6 +271,8 @@ populateData(strIndicator){
       <button onClick={(e) => this.handleQuery(e)}>New Query</button>
     </div>
 
+<div className="plotBox">
+  <h6 className="plotTitle">{this.state.selectedIndicator} {this.state.selectedCountry}</h6>
     <XYPlot xType="ordinal" height={300} width={400} xDistance={10} margin={{ bottom: 150 }}>
       <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70} tickPadding={20}
       style={{
@@ -280,7 +282,6 @@ populateData(strIndicator){
       }}
       />
       <YAxis
-      title={this.state.selectedIndicator}
       position="end"
       style={{fontSize: 'medium'}}
       />
@@ -288,6 +289,8 @@ populateData(strIndicator){
         data={this.state.data}
       />
     </XYPlot>
+    <p></p>
+</div>
 
 </div>
 </div>
