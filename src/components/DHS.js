@@ -297,8 +297,8 @@ handleQuery(e){
           <button onClick={(e) => this.handleQuery(e)}>New Query</button>
         </div>
 
-        <XYPlot xType="ordinal" height={300} width={400} xDistance={100} margin={{bottom: 100}}>
-          <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70}
+        <XYPlot xType="ordinal" height={300} width={400} margin={{bottom: 200, left: 50}}>
+          <XAxis tickFormat={v => `${v}`} tickPadding={20} tickLabelAngle={-60}
           style={{
             line: {stroke: '#ADDDE1'},
             ticks: {stroke: '#ADDDE1'},
@@ -306,6 +306,8 @@ handleQuery(e){
           }}
           />
           <YAxis
+          title={this.state.selectedIndicator}
+          style={{fontSize: 'medium'}}
           />
           <VerticalBarSeries
             data={this.state.data}

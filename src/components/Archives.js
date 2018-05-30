@@ -282,11 +282,7 @@ populateData(strIndicator){
       <YAxis
       title={this.state.selectedIndicator}
       position="end"
-      style={{
-        line: {stroke: '#ADDDE1'},
-        ticks: {stroke: '#ADDDE1'},
-        text: {stroke: 'none', fill: '#6b6b76', fontWeight: 700, fontSize: 'medium'}
-      }}
+      style={{fontSize: 'medium'}}
       />
       <VerticalBarSeries
         data={this.state.data}
