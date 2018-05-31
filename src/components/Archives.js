@@ -220,16 +220,15 @@ populateData(strIndicator){
          var x, y;
          data.push({x: key, y: value});
        }
-       console.log("years", years);
-       console.log("values", values);
     }
  }
 
+// make the menu drop downs available again for a new query
  handleQuery(e){
-  // make the menu drop downs available again for a new query
-  this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"], data: [] });
+  this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"], data: [], years: [], values: [] });
  }
 
+// function to convert div to image
 saveImage(){
   var input = document.getElementById('canvas');
   html2canvas(input)
@@ -239,6 +238,7 @@ saveImage(){
   });
 }
 
+// function to enable image download to desktop
 downloadURL(imgData){
   var a = document.createElement('a');
   a.href = imgData.replace("image/png", "image/octet-stream");
@@ -246,12 +246,25 @@ downloadURL(imgData){
   a.click();
 }
 
+// function to enable user to save data as .csv file
+saveCSV(){
+  var csvData = [ [this.state.selectedIndicator, this.state.selectedCountry, this.state.years],["","",this.state.values]];
+  var dataString = '';
+  var csvContent = "data:text/csv;charset=utf-8,";
+  csvData.forEach(function(infoArray, index){
+     dataString = infoArray.join(",");
+     csvContent += index < infoArray.length ? dataString + "\n" : dataString;
+  });
+  var encodedUri = encodeURI(csvContent);
+  var link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `${this.state.selectedIndicator}.csv`);
+  link.click();
+}
+
  render (){
    var date = new Date();
    var dateStr = date.toISOString().slice(0,10);
-   var fileName = this.state.selectedIndicator + '.png';
-
-
 
    return(
      <div>
@@ -313,7 +326,8 @@ downloadURL(imgData){
     </XYPlot>
     <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
 </div>
-  <button className="downloadButton" onClick={() => this.saveImage()}>Save</button>
+  <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
+  <button className="downloadCSVButton" onClick={() => this.saveCSV()}>Save CSV</button>
 </div>
 </div>
    );
