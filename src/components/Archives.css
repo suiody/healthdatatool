@@ -4,7 +4,7 @@
 }
 
 .plotTitle {
-  font-size: 1.5rem;
+  font-size: 1rem;
   margin-top: 2rem;
   margin-bottom: 1rem;
   text-align: left;
@@ -13,4 +13,8 @@
 .citationDHS {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.downloadButton {
+  margin: 1rem 1rem;
 }

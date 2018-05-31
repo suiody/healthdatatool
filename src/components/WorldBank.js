@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import NavBar from './NavBar';
 
 class WorldBank extends Component {
   constructor(props) {
@@ -10,8 +11,6 @@ class WorldBank extends Component {
    }
  }
 
- componentDidMount(){
- }
 
  getIndicators(){
    axios.get('http://api.worldbank.org/v2/countries/all/indicators/SP.POP.TOTL?format=json')
@@ -38,7 +37,8 @@ getTopics(){
 render(){
   return(
     <div>
-     World Bank query will be added here.
+    <NavBar />
+
     </div>
   );
    }

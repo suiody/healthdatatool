@@ -313,7 +313,7 @@ downloadURL(imgData){
     </XYPlot>
     <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
 </div>
-  <button onClick={() => this.saveImage()}>Save</button>
+  <button className="downloadButton" onClick={() => this.saveImage()}>Save</button>
 </div>
 </div>
    );
