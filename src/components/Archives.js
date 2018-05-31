@@ -4,6 +4,7 @@ import NavBar from './NavBar';
 import './react_plot_style.css';
 import {XYPlot,XAxis, YAxis,VerticalBarSeries} from 'react-vis';
 import './Archives.css';
+import html2canvas from 'html2canvas';
 
 class Archives extends Component {
 
@@ -229,9 +230,14 @@ populateData(strIndicator){
   this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"], data: [] });
  }
 
+saveImage(){
+  
+}
+
  render (){
    var date = new Date();
    var dateStr = date.toISOString().slice(0,10);
+   var fileName = this.state.selectedIndicator + '.png';
 
    return(
      <div>
@@ -273,7 +279,7 @@ populateData(strIndicator){
       <button onClick={(e) => this.handleQuery(e)}>New Query</button>
     </div>
 
-<div className="plotBox">
+<div className="plotBox" id="plot">
   <h6 className="plotTitle">{this.state.selectedIndicator} {this.state.selectedCountry}</h6>
     <XYPlot xType="ordinal" height={300} width={400} xDistance={10} margin={{ bottom: 150 }}>
       <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70} tickPadding={20}
@@ -293,7 +299,7 @@ populateData(strIndicator){
     </XYPlot>
     <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
 </div>
-
+<button onClick={() => this.saveImage()}>Download Image</button>
 </div>
 </div>
    );
