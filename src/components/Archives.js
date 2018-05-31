@@ -231,13 +231,27 @@ populateData(strIndicator){
  }
 
 saveImage(){
-  
+  var input = document.getElementById('canvas');
+  html2canvas(input)
+  .then((canvas) =>{
+    let imgData = canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
+     this.downloadURL(imgData);
+  });
+}
+
+downloadURL(imgData){
+  var a = document.createElement('a');
+  a.href = imgData.replace("image/png", "image/octet-stream");
+  a.download = 'graph.png';
+  a.click();
 }
 
  render (){
    var date = new Date();
    var dateStr = date.toISOString().slice(0,10);
    var fileName = this.state.selectedIndicator + '.png';
+
+
 
    return(
      <div>
@@ -279,7 +293,7 @@ saveImage(){
       <button onClick={(e) => this.handleQuery(e)}>New Query</button>
     </div>
 
-<div className="plotBox" id="plot">
+<div className="plotBox" id="canvas">
   <h6 className="plotTitle">{this.state.selectedIndicator} {this.state.selectedCountry}</h6>
     <XYPlot xType="ordinal" height={300} width={400} xDistance={10} margin={{ bottom: 150 }}>
       <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70} tickPadding={20}
@@ -299,7 +313,7 @@ saveImage(){
     </XYPlot>
     <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
 </div>
-<button onClick={() => this.saveImage()}>Download Image</button>
+  <button onClick={() => this.saveImage()}>Save</button>
 </div>
 </div>
    );
