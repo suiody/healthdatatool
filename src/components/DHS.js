@@ -27,6 +27,8 @@ class DHS extends Component {
      strIndicator: '', // keeps track of indicatorId for DHS query
      strCharGroup: '', // keeps track of current characteristic group to map
      data: [], // data values for graphing
+     xvalues: [], // stores x-axis values for csv
+     yvalues: [], // stores y-axis values for csv
      isCountryDisabled: false, // by default, only make country dropdown visible
      isYearDisabled: true, // will be enabled after country selection or new query
      isIndicatorDisabled: true, // will be enabled after year selection or new query
@@ -216,6 +218,7 @@ handleCharacteristic(e){
   this.graphData(strCharGroup);
 }
 
+// prep data for plotting
 graphData(strCharGroup){
   var xAxisCategories = [];
   var arrSeriesNames = [];
@@ -238,16 +241,17 @@ graphData(strCharGroup){
     var x, y;
     data.push({x: key, y: value, xOffset: 5, rotation: 34});
   }
-  this.setState({data: data});
+  this.setState({data: data, yvalues: yAxisValues, xvalues: xAxisCategories});
 }
 
-handleQuery(e){
  // make the menu drop downs available again for a new query
+handleQuery(e){
  var tmp = this.state.countries;
  tmp.unshift("Select a country");
- this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: ["Select a year"], indicators: ["Select an indicator"], characteristics: ["Select a category"], data: [] });
+ this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: ["Select a year"], indicators: ["Select an indicator"], characteristics: ["Select a category"], data: [], xvalues: [], yvalues: [] });
 }
 
+// function to convert plot canvas to image
 saveImage(){
   var input = document.getElementById('canvas');
   html2canvas(input)
@@ -257,11 +261,28 @@ saveImage(){
   });
 }
 
+// function to download image to user's desktop
 downloadURL(imgData){
   var a = document.createElement('a');
   a.href = imgData.replace("image/png", "image/octet-stream");
   a.download = 'graph.png';
   a.click();
+}
+
+// function to enable user to save data as .csv file
+saveCSV(){
+  var csvData = [ [this.state.selectedIndicator, this.state.selectedCountry, this.state.selectedYear, this.state.xvalues],["","","",this.state.yvalues]];
+  var dataString = '';
+  var csvContent = "data:text/csv;charset=utf-8,";
+  csvData.forEach(function(infoArray, index){
+     dataString = infoArray.join(",");
+     csvContent += index < infoArray.length ? dataString + "\n" : dataString;
+  });
+  var encodedUri = encodeURI(csvContent);
+  var link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `${this.state.selectedIndicator}.csv`);
+  link.click();
 }
 
   render(){
@@ -330,7 +351,8 @@ downloadURL(imgData){
         </XYPlot>
           <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
       </div>
-  <button className="downloadButton" onClick={() => this.saveImage()}>Save</button>
+      <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
+      <button className="downloadCSVButton" onClick={() => this.saveCSV()}>Save CSV</button>
     </div>
   </div>
       );
