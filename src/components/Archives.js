@@ -49,14 +49,14 @@ class Archives extends Component {
 
 async getInfantMortality(){
   var axiosInstance = axios.create({
-    baseURL: 'http://localhost:3001/api/v2'
+    baseURL: process.env.REACT_APP_API_URL
   })
   try {
    let response = await axiosInstance.get('/infant_mortalities.json')
    if(response.status === 200){
+
      var infantData = this.state.infantData;
      infantData = response.data;
-     console.log("infant data", response.data[0]);
      this.setState({
        infantData: response.data
      })
@@ -65,6 +65,7 @@ async getInfantMortality(){
    console.log(err);
    window.alert("There was a problem connecting to the archives. Please try again later, or search one of the other databases.");
    window.location = "/";
+
    return
  }
  this.getChildMortality();
@@ -72,14 +73,14 @@ async getInfantMortality(){
 
 async getChildMortality(){
   var axiosInstance = axios.create({
-    baseURL: 'http://localhost:3001/api/v2'
+    baseURL: process.env.REACT_APP_API_URL
   })
   try {
    let response = await axiosInstance.get('/under_five_mortalities.json')
    if(response.status === 200){
+
      var childData = this.state.childData;
      childData = response.data;
-     console.log("child data", response.data[0]);
      this.setState({
        childData: response.data
      })
@@ -131,11 +132,13 @@ populateData(strIndicator){
             hash["Value"] = value.Value;
             arrDataCh.push(hash);
         });
+
         var tmp = [];
          arrDataCh.forEach(function(value,index){
            tmp.push(value.CountryName);
          });
          // some countries are listed multiple times because they have multiple survey years
+
         var uniqCountries = Array.from(new Set(tmp))
         this.setState({ countries: this.state.countries.concat(uniqCountries) });
        }
@@ -145,7 +148,6 @@ populateData(strIndicator){
  // store the selected indicator in state
   handleIndicator(e){
     var selectedIndicator = e.target.value;
-    console.log("selected Indicator", selectedIndicator);
     var strIndicator = selectedIndicator.toString();
     this.setState({selectedIndicator: selectedIndicator});
     this.setState({ isIndicatorDisabled: true });
@@ -156,7 +158,6 @@ populateData(strIndicator){
   // store the selected country from dropdown menu in state
    handleCountry(e){
      var selectedCountry = e.target.value;
-     console.log("selected country",selectedCountry);
      this.setState({ selectedCountry: selectedCountry });
      this.setState({ isCountryDisabled: true });
      this.setState({ isCharacteristicDisabled: false });
@@ -165,7 +166,6 @@ populateData(strIndicator){
  // store selected characterstic in state
  handleCharacteristic(e){
    var selectedCharacteristic = e.target.value;
-   console.log("selected characterstic", selectedCharacteristic);
    this.setState({selectedCharacteristic: selectedCharacteristic});
    var strCharGroup = selectedCharacteristic;
    this.getGraph(strCharGroup, this.state.selectedCountry, this.state.selectedIndicator);
@@ -198,8 +198,6 @@ populateData(strIndicator){
          var x, y;
          data.push({x: key, y: value});
        }
-       console.log("years", years);
-       console.log("values", values);
     } else if (selectedIndicator === "Under Five Mortality Rate"){
       var arrDataCh = this.state.arrDataCh;
        arrDataCh.forEach(function(value,index){
