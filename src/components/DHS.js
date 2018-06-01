@@ -295,7 +295,7 @@ saveCSV(){
      <div className="container-fluid">
        <div className="instructionsDiv">
          <ol className="instructions">
-            <li><strong>Please note</strong>: This data is being queried from the DHS database based on your selections from the dropdown menus. When the data is available, the dropdown menu will become active.</li>
+            <li><strong>Please note</strong>: This data is being queried from the DHS database based on your selections from the dropdown menus. When the data is available, the dropdown menu will become active. There are over 2,900 indicators so please be patient while the indicator dropdown loads.</li>
             <li><strong>Select a country</strong> from the first dropdown.</li>
             <li><strong>Select a survey year</strong> from the second dropdown.</li>
             <li><strong>Select an indicator</strong> from the third dropdown.</li>
