@@ -99,7 +99,7 @@ populateData(strIndicator){
 
   if (selectedIndicator === "Infant Mortality Rate"){
       var infantData = this.state.infantData;
-        if (infantData) {
+        if (infantData.length >= 1) {
           var arrDataInf = this.state.arrDataInf;
           infantData.forEach(function(value,index){
             var hash = {};
@@ -121,7 +121,7 @@ populateData(strIndicator){
          }
   } else if(selectedIndicator === "Under Five Mortality Rate"){
     var childData = this.state.childData;
-      if (childData) {
+      if (childData.length >= 1) {
         var arrDataCh = this.state.arrDataCh;
         childData.forEach(function(value,index){
           var hash = {};
