@@ -148,9 +148,8 @@ handleYear(e){
    }
    } catch(err){
      console.log(err);
-     return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab.");
+      window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab.");
      window.location = "/";
-     return
    }
    this.setState({ isIndicatorDisabled: false });
  }
@@ -235,10 +234,8 @@ graphData(strCharGroup){
   var yAxisValues = [].concat.apply([], arrSeriesValues);
 
   for (var i = 0; i < xAxisCategories.length; i++){
-    var hash = {};
     var key = xAxisCategories[i].toString();
     var value = yAxisValues[i];
-    var x, y;
     data.push({x: key, y: value, xOffset: 5, rotation: 34});
   }
   this.setState({data: data, yvalues: yAxisValues, xvalues: xAxisCategories});
@@ -304,28 +301,28 @@ saveCSV(){
          </ol>
         </div>
 
-         <select className="dropDown" onChange={(e) => this.handleCountry(e)} value={this.state.selectedCountry} disabled={this.state.isCountryDisabled}>
+         <select className="dropDown" onChange={(e) => this.handleCountry(e)} disabled={this.state.isCountryDisabled}>
           {
             this.state.countries.map((country) =>
              <option key={this.getKey()}>{country.CountryName ? country.CountryName : "Select a country"}</option>
             )
           }
          </select>
-          <select className="dropDown" onChange={(e) => this.handleYear(e)} value={this.state.selectedYear} disabled={this.state.isYearDisabled}>
+          <select className="dropDown" onChange={(e) => this.handleYear(e)} disabled={this.state.isYearDisabled}>
              {
                 this.state.years.map((year) =>
                   <option key={this.getKey()}>{year.SurveyYear ? year.SurveyYear : "Select a year"}</option>
                 )
              }
         </select>
-        <select className="dropDown" onChange={(e) => this.handleIndicator(e)}     value={this.state.selectedIndicator} disabled={this.state.isIndicatorDisabled}>
+        <select className="dropDown" onChange={(e) => this.handleIndicator(e)}   disabled={this.state.isIndicatorDisabled}>
             {
               this.state.indicators.map((ind) =>
                 <option key={this.getKey()}>{ind.Label ? ind.Label : "Select an indicator"}</option>
               )
             }
         </select>
-          <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic} disabled={this.state.isCharacteristicDisabled}>
+          <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)}  disabled={this.state.isCharacteristicDisabled}>
           {
             this.state.characteristics.map((c) =>
               <option key={this.getKey()}>{this.state.characteristics ? c : "Select a category"}</option>

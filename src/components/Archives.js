@@ -54,9 +54,6 @@ async getInfantMortality(){
   try {
    let response = await axiosInstance.get('/infant_mortalities.json')
    if(response.status === 200){
-
-     var infantData = this.state.infantData;
-     infantData = response.data;
      this.setState({
        infantData: response.data
      })
@@ -65,8 +62,6 @@ async getInfantMortality(){
    console.log(err);
    window.alert("There was a problem connecting to the archives. Please try again later, or search one of the other databases.");
    window.location = "/";
-
-   return
  }
  this.getChildMortality();
 }
@@ -78,9 +73,6 @@ async getChildMortality(){
   try {
    let response = await axiosInstance.get('/under_five_mortalities.json')
    if(response.status === 200){
-
-     var childData = this.state.childData;
-     childData = response.data;
      this.setState({
        childData: response.data
      })
@@ -89,20 +81,22 @@ async getChildMortality(){
    console.log(err);
    window.alert("There was a problem connecting to the archives. Please try again later, or search one of the other databases.")
    window.location = "/";
-   return
  }
 }
 
 // extrapolate the relevant data from the datasets returned in the API call
 populateData(strIndicator){
   var selectedIndicator = strIndicator;
+  var hash = {};
+  var tmp = [];
+  var uniqCountries = [];
 
   if (selectedIndicator === "Infant Mortality Rate"){
       var infantData = this.state.infantData;
         if (infantData.length >= 1) {
           var arrDataInf = this.state.arrDataInf;
           infantData.forEach(function(value,index){
-            var hash = {};
+             hash = {};
               hash["CountryName"] = value.CountryName;
               hash["SurveyYear"] = value.SurveyYear;
               hash["Indicator"] = value.Indicator;
@@ -111,12 +105,12 @@ populateData(strIndicator){
               arrDataInf.push(hash);
           });
           // array to hold country values, contains duplicates
-          var tmp = [];
+           tmp = [];
            arrDataInf.forEach(function(value,index){
              tmp.push(value.CountryName);
            });
            // some countries are listed multiple times because they have multiple survey years
-          var uniqCountries = Array.from(new Set(tmp))
+           uniqCountries = Array.from(new Set(tmp))
           this.setState({ countries: this.state.countries.concat(uniqCountries) });
          }
   } else if(selectedIndicator === "Under Five Mortality Rate"){
@@ -124,7 +118,7 @@ populateData(strIndicator){
       if (childData.length >= 1) {
         var arrDataCh = this.state.arrDataCh;
         childData.forEach(function(value,index){
-          var hash = {};
+            hash = {};
             hash["CountryName"] = value.CountryName;
             hash["SurveyYear"] = value.SurveyYear;
             hash["Indicator"] = value.Indicator;
@@ -133,13 +127,13 @@ populateData(strIndicator){
             arrDataCh.push(hash);
         });
 
-        var tmp = [];
+         tmp = [];
          arrDataCh.forEach(function(value,index){
            tmp.push(value.CountryName);
          });
          // some countries are listed multiple times because they have multiple survey years
 
-        var uniqCountries = Array.from(new Set(tmp))
+         uniqCountries = Array.from(new Set(tmp))
         this.setState({ countries: this.state.countries.concat(uniqCountries) });
        }
   }
@@ -177,6 +171,8 @@ populateData(strIndicator){
    var xAxisCategories = [];
    var yAxisValues = [];
    var data = this.state.data;
+   var key;
+   var value;
 
    if (selectedIndicator === "Infant Mortality Rate"){
      var arrDataInf = this.state.arrDataInf;
@@ -192,10 +188,8 @@ populateData(strIndicator){
        yAxisValues = this.state.values;
 
        for (var i = 0; i < xAxisCategories.length; i++){
-         var hash = {};
-         var key = xAxisCategories[i].toString();
-         var value = yAxisValues[i];
-         var x, y;
+          key = xAxisCategories[i].toString();
+          value = yAxisValues[i];
          data.push({x: key, y: value});
        }
     } else if (selectedIndicator === "Under Five Mortality Rate"){
@@ -211,11 +205,9 @@ populateData(strIndicator){
        xAxisCategories = this.state.years;
        yAxisValues = this.state.values;
 
-       for (var i = 0; i < xAxisCategories.length; i++){
-         var hash = {};
-         var key = xAxisCategories[i].toString();
-         var value = yAxisValues[i];
-         var x, y;
+       for (var j = 0; j < xAxisCategories.length; j++){
+          key = xAxisCategories[j].toString();
+          value = yAxisValues[j];
          data.push({x: key, y: value});
        }
     }
@@ -278,7 +270,7 @@ saveCSV(){
               </ol>
             </div>
 
-      <select className="dropDown" onChange={(e) => this.handleIndicator(e)}     value={this.state.selectedIndicator} disabled={this.state.isIndicatorDisabled}>
+      <select className="dropDown" onChange={(e) => this.handleIndicator(e)}  disabled={this.state.isIndicatorDisabled}>
           {
             this.state.indicators.map((ind) =>
               <option key={this.getKey()}>{ind ? ind : "Select an indicator"}</option>
@@ -286,17 +278,17 @@ saveCSV(){
           }
       </select>
 
-      <select className="dropDown" onChange={(e) => this.handleCountry(e)} value={this.state.selectedCountry} disabled={this.state.isCountryDisabled}>
+      <select className="dropDown" onChange={(e) => this.handleCountry(e)} disabled={this.state.isCountryDisabled}>
        {
          this.state.countries.map((country) =>
           <option key={this.getKey()}>{country ? country : "Select a country"}</option>
          )
        }
       </select>
-      <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} value={this.state.selectedCharacteristic} disabled={this.state.isCharacteristicDisabled}>
+      <select className="dropDown" onChange={(e) => this.handleCharacteristic(e)} disabled={this.state.isCharacteristicDisabled}>
       {
         this.state.characteristics.map((c) =>
-          <option key={this.getKey()}>{this.state.characteristics ? c : "Select a category"}</option>
+          <option key={this.getKey()}>{c ? c : "Select a category"}</option>
         )
       }
     </select>
