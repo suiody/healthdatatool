@@ -46,8 +46,9 @@ $ npm install
 $ npm start
 navigate to localhost:3000 in your browser
 ```
-
 ## Contributing Guidelines
 - Follow the installation instructions above
 - Read the code of conduct in the master branch
 - Check out the open issues under the issues tab, or recommend a new feature or issue
+- Create a new feature branch in your repo, do some work, submit a pull request
+- First-timer? See this [article](https://akrabat.com/the-beginners-guide-to-contributing-to-a-github-project/) for step-by-step guidelines on contributing. Newbies are welcome!
