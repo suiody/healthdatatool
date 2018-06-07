@@ -1,4 +1,4 @@
-#README
+# README
 
 Motivation: Development databases contain a wealth of information, yet many are geared toward analysts, or others in technical roles, and the user interfaces require a bit of a learning curve.
 
@@ -12,27 +12,42 @@ The completed app will:
 - enable download data in .csv format, or graphs as .jpg or .png format
 - have access to some archived data for popular datasets, in the event that one of the databases is not accessible, enabled by a back-end rails API
 
-The app is currently under development, however, if you'd like to check the current progress, follow the steps below, checkout the [current live version here](https://glacial-beach-89300.herokuapp.com/). Currently, users can query the DHS database through the app and see dynamic graphs of results, or search selected archived indicators, which query the rails API. I am in the process of adding options to search additional databases and also revising the visualizations. 
-
+The app is currently under development, however, if you'd like to check the current progress, follow the steps below, checkout the [current live version here](https://glacial-beach-89300.herokuapp.com/).  
 
 Download & Install
-- clone the rails repository (backend Ruby-on-Rails) 'healthdatatool-api'
+- fork or clone the rails repository (backend Ruby-on-Rails) 'healthdatatool-api'
 - navigate to the rails repository on your local machine
 - start the rails server on port 3001
 
+
+## Contributing
+The project is housed in two separate repositories, [healthdatatool](https://github.com/cheneyshreve/healthdatatool), which provides the front-end in React, and [healthdatatool-api](https://github.com/cheneyshreve/healthdatatool-api), which is the Rails 5 API with a postgreSQL database housing archive data. You can contribute to either, or both. You can run the front-end separately, however, you will not have access to the "archives" component. Alternatively, you can contribute to the database through the backend repository without downloading the frontend repository.
+
+### Installation and Setup
+Set up a local copy on your computer:
+- fork the backend repository
+- clone the backend repository
+- navigate to healthdatatool-api on your local machine
+- start the rails server on port 3001
+
 ```
-$ git clone https://github.com/cheneyshreve/healthdatatool-api.git
-$ cd healthdatatool-api
 $ rails s -p 3001
 ```
-- clone the current repository 'healthdatatool'
-- navigate to the react repository on your local machine
+
+- fork the frontend repository
+- clone the frontend repository
+- navigate to healthdatatool directory on your local machine
+- install npm
+- run npm
 - navigate to localhost:3000 in your browser
 
 ```
-$ git clone https://github.com/cheneyshreve/healthdatatool.git
-$ cd healthdatatool
 $ npm install
 $ npm start
 navigate to localhost:3000 in your browser
 ```
+
+## Contributing Guidelines
+- Follow the installation instructions above
+- Read the code of conduct in the master branch
+- Check out the open issues under the issues tab, or recommend a new feature or issue
