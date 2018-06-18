@@ -60,7 +60,7 @@ async getInfantMortality(){
    }
  } catch(err){
    console.log(err);
-   window.alert("There was a problem connecting to the archives. Please try again later, or search one of the other databases.");
+   window.alert("There was a problem connecting to the infant mortality archives. Please try again later, or search one of the other databases.");
    window.location = "/";
  }
  this.getChildMortality();
@@ -79,7 +79,7 @@ async getChildMortality(){
    }
  } catch(err){
    console.log(err);
-   window.alert("There was a problem connecting to the archives. Please try again later, or search one of the other databases.")
+   window.alert("There was a problem connecting to the child mortality archives. Please try again later, or search one of the other databases.")
    window.location = "/";
  }
 }
@@ -93,30 +93,34 @@ populateData(strIndicator){
 
   if (selectedIndicator === "Infant Mortality Rate"){
       var infantData = this.state.infantData;
-        if (infantData.length >= 1) {
+
           var arrDataInf = this.state.arrDataInf;
-          infantData.forEach(function(value,index){
-             hash = {};
-              hash["CountryName"] = value.CountryName;
-              hash["SurveyYear"] = value.SurveyYear;
-              hash["Indicator"] = value.Indicator;
-              hash["CharacteristicLabel"] = value.CharacteristicLabel;
-              hash["Value"] = value.Value;
-              arrDataInf.push(hash);
-          });
+
+            infantData.forEach(function(value,index){
+               hash = {};
+                hash["CountryName"] = value.CountryName;
+                hash["SurveyYear"] = value.SurveyYear;
+                hash["Indicator"] = value.Indicator;
+                hash["CharacteristicLabel"] = value.CharacteristicLabel;
+                hash["Value"] = value.Value;
+                arrDataInf.push(hash);
+            });
+
           // array to hold country values, contains duplicates
            tmp = [];
            arrDataInf.forEach(function(value,index){
              tmp.push(value.CountryName);
            });
            // some countries are listed multiple times because they have multiple survey years
-           uniqCountries = Array.from(new Set(tmp))
+           uniqCountries = Array.from(new Set(tmp));
+           console.log("uniqCountries", uniqCountries);
           this.setState({ countries: this.state.countries.concat(uniqCountries) });
-         }
+
   } else if(selectedIndicator === "Under Five Mortality Rate"){
     var childData = this.state.childData;
-      if (childData.length >= 1) {
+
         var arrDataCh = this.state.arrDataCh;
+
         childData.forEach(function(value,index){
             hash = {};
             hash["CountryName"] = value.CountryName;
@@ -133,9 +137,10 @@ populateData(strIndicator){
          });
          // some countries are listed multiple times because they have multiple survey years
 
-         uniqCountries = Array.from(new Set(tmp))
+         uniqCountries = Array.from(new Set(tmp));
+         console.log("uniqCountries", uniqCountries);
         this.setState({ countries: this.state.countries.concat(uniqCountries) });
-       }
+       
   }
 }
 
