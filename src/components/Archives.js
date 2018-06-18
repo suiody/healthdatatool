@@ -93,9 +93,9 @@ populateData(strIndicator){
 
   if (selectedIndicator === "Infant Mortality Rate"){
       var infantData = this.state.infantData;
-        if (infantData.length >= 1) {
+
           var arrDataInf = this.state.arrDataInf;
-          if (arrDataInf.length >= 1) {
+
             infantData.forEach(function(value,index){
                hash = {};
                 hash["CountryName"] = value.CountryName;
@@ -105,21 +105,22 @@ populateData(strIndicator){
                 hash["Value"] = value.Value;
                 arrDataInf.push(hash);
             });
-          }
+
           // array to hold country values, contains duplicates
            tmp = [];
            arrDataInf.forEach(function(value,index){
              tmp.push(value.CountryName);
            });
            // some countries are listed multiple times because they have multiple survey years
-           uniqCountries = Array.from(new Set(tmp))
+           uniqCountries = Array.from(new Set(tmp));
+           console.log("uniqCountries", uniqCountries);
           this.setState({ countries: this.state.countries.concat(uniqCountries) });
-         }
+
   } else if(selectedIndicator === "Under Five Mortality Rate"){
     var childData = this.state.childData;
-      if (childData.length >= 1) {
+
         var arrDataCh = this.state.arrDataCh;
-        if (arrDataCh.length >= 1) {
+
         childData.forEach(function(value,index){
             hash = {};
             hash["CountryName"] = value.CountryName;
@@ -129,16 +130,17 @@ populateData(strIndicator){
             hash["Value"] = value.Value;
             arrDataCh.push(hash);
         });
-      }
+
          tmp = [];
          arrDataCh.forEach(function(value,index){
            tmp.push(value.CountryName);
          });
          // some countries are listed multiple times because they have multiple survey years
 
-         uniqCountries = Array.from(new Set(tmp))
+         uniqCountries = Array.from(new Set(tmp));
+         console.log("uniqCountries", uniqCountries);
         this.setState({ countries: this.state.countries.concat(uniqCountries) });
-       }
+       
   }
 }
 
