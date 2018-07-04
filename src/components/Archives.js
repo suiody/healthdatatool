@@ -176,9 +176,11 @@ populateData(strIndicator){
    var data = this.state.data;
    var key;
    var value;
+   var arrDataInf = this.state.arrDataInf;
+   var arrDataCh = this.state.arrDataCh;
 
-   if (selectedIndicator === "Infant Mortality Rate"){
-     var arrDataInf = this.state.arrDataInf;
+   if (selectedIndicator === "Infant Mortality Rate" && arrDataInf.length > 1){
+
       arrDataInf.forEach(function(value,index){
        if (value.CountryName === selectedCountry){
          years.push(value.SurveyYear);
@@ -196,9 +198,9 @@ populateData(strIndicator){
          data.push({x: key, y: value});
        }
     } else if (selectedIndicator === "Under Five Mortality Rate"){
-      var arrDataCh = this.state.arrDataCh;
+
        arrDataCh.forEach(function(value,index){
-         if (value.CountryName === selectedCountry){
+         if (value.CountryName === selectedCountry && arrDataCh.length > 1){
            years.push(value.SurveyYear);
            values.push(value.Value);
          }
