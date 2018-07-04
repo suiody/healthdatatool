@@ -41,6 +41,7 @@ class Archives extends Component {
 
  componentDidMount(){
    this.getInfantMortality();
+   this.getChildMortality();
  }
 
  getKey(){
@@ -63,7 +64,6 @@ async getInfantMortality(){
    window.alert("There was a problem connecting to the infant mortality archives. Please try again later, or search one of the other databases.");
    window.location = "/";
  }
- this.getChildMortality();
 }
 
 async getChildMortality(){
@@ -90,36 +90,34 @@ populateData(strIndicator){
   var hash = {};
   var tmp = [];
   var uniqCountries = [];
+  var infantData = this.state.infantData;
+  var arrDataInf = this.state.arrDataInf;
+  var childData = this.state.childData;
+  var arrDataCh = this.state.arrDataCh;
 
-  if (selectedIndicator === "Infant Mortality Rate"){
-      var infantData = this.state.infantData;
+  if (selectedIndicator === "Infant Mortality Rate" && infantData.length > 1){
 
-          var arrDataInf = this.state.arrDataInf;
+        infantData.forEach(function(value,index){
+           hash = {};
+            hash["CountryName"] = value.CountryName;
+            hash["SurveyYear"] = value.SurveyYear;
+            hash["Indicator"] = value.Indicator;
+            hash["CharacteristicLabel"] = value.CharacteristicLabel;
+            hash["Value"] = value.Value;
+            arrDataInf.push(hash);
+        });
 
-            infantData.forEach(function(value,index){
-               hash = {};
-                hash["CountryName"] = value.CountryName;
-                hash["SurveyYear"] = value.SurveyYear;
-                hash["Indicator"] = value.Indicator;
-                hash["CharacteristicLabel"] = value.CharacteristicLabel;
-                hash["Value"] = value.Value;
-                arrDataInf.push(hash);
-            });
+        // array to hold country values, contains duplicates
+         tmp = [];
+         arrDataInf.forEach(function(value,index){
+           tmp.push(value.CountryName);
+         });
+         // some countries are listed multiple times because they have multiple survey years
+         uniqCountries = Array.from(new Set(tmp));
+         console.log("uniqCountries", uniqCountries);
+        this.setState({ countries: this.state.countries.concat(uniqCountries) });
 
-          // array to hold country values, contains duplicates
-           tmp = [];
-           arrDataInf.forEach(function(value,index){
-             tmp.push(value.CountryName);
-           });
-           // some countries are listed multiple times because they have multiple survey years
-           uniqCountries = Array.from(new Set(tmp));
-           console.log("uniqCountries", uniqCountries);
-          this.setState({ countries: this.state.countries.concat(uniqCountries) });
-
-  } else if(selectedIndicator === "Under Five Mortality Rate"){
-    var childData = this.state.childData;
-
-        var arrDataCh = this.state.arrDataCh;
+  } else if (selectedIndicator === "Under Five Mortality Rate" && childData.length > 1){
 
         childData.forEach(function(value,index){
             hash = {};
@@ -140,7 +138,7 @@ populateData(strIndicator){
          uniqCountries = Array.from(new Set(tmp));
          console.log("uniqCountries", uniqCountries);
         this.setState({ countries: this.state.countries.concat(uniqCountries) });
-       
+
   }
 }
 
