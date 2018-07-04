@@ -84,7 +84,6 @@ class DHS extends Component {
  // store the selected country from dropdown menu in state
   handleCountry(e){
     var selectedCountry = e.target.value;
-    console.log("selected country", selectedCountry);
     var result = this.state.countries.filter((co) =>
       co.CountryName === selectedCountry
    );
@@ -120,7 +119,7 @@ async getSurveyYears(strCountry){
 handleYear(e){
    var selectedYear = e.target.value;
    this.setState({ selectedYear: selectedYear });
-   console.log("selected year", selectedYear);
+
    this.state.years.shift(); // get rid of the placeholder element
    var result = this.state.years.filter((yr) =>
      yr.SurveyYear.toString() === selectedYear
@@ -176,7 +175,7 @@ handleYear(e){
                      "&surveyIds=" + strSurveyYear +
                      "&indicatorIds=" + strIndicator +
                      "&f=json&perpage=1000&breakdown=all";
-    console.log("apiURL", apiURL);
+
     axios.get(apiURL)
     .then(response => {
       if(response.status === 200){
@@ -241,11 +240,25 @@ graphData(strCharGroup){
   this.setState({data: data, yvalues: yAxisValues, xvalues: xAxisCategories});
 }
 
+removeA(arr) {
+    var what, a = arguments, L = a.length, ax;
+    while (L > 1 && arr.length) {
+        what = a[--L];
+        while ((ax= arr.indexOf(what)) !== -1) {
+            arr.splice(ax, 1);
+        }
+    }
+    return arr;
+}
  // make the menu drop downs available again for a new query
 handleQuery(e){
  var tmp = this.state.countries;
+ // remove multiple instances incase user goes back and forth with selection
+ this.removeA(tmp,"Select a country");
+ //make sure only appears once, note: refactor later, quick bug fix
  tmp.unshift("Select a country");
- this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: ["Select a year"], indicators: ["Select an indicator"], characteristics: ["Select a category"], data: [], xvalues: [], yvalues: [] });
+
+ this.setState({ isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: ["Select a year"], indicators: ["Select an indicator"], characteristics: ["Select a category"], data: [], xvalues: [], yvalues: [] });
 }
 
 // function to convert plot canvas to image
