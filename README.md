@@ -23,6 +23,8 @@ Download & Install
 ## Contributing
 The project is housed in two separate repositories, [healthdatatool](https://github.com/cheneyshreve/healthdatatool), which provides the front-end in React, and [healthdatatool-api](https://github.com/cheneyshreve/healthdatatool-api), which is the Rails 5 API with a postgreSQL database housing archive data. You can contribute to either, or both. You can run the front-end separately, however, you will not have access to the "archives" component. Alternatively, you can contribute to the database through the backend repository without downloading the frontend repository.
 
+Please note: if you would like to modify the Rails-5 database, you will need to message me to get the relevant environment details. My email is visible in my GitHub profile.
+
 ### Installation and Setup
 Set up a local copy on your computer:
 - fork the backend repository
