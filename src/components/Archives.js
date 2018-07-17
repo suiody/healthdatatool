@@ -39,9 +39,9 @@ class Archives extends Component {
    this.handleQuery = this.handleQuery.bind(this);
  }
 
- componentDidMount(){
-   this.getInfantMortality();
- }
+ // componentDidMount(){
+ //   this.getInfantMortality();
+ // }
 
  getKey(){
    return this.keyCount++;
@@ -140,7 +140,7 @@ populateData(strIndicator){
          uniqCountries = Array.from(new Set(tmp));
          console.log("uniqCountries", uniqCountries);
         this.setState({ countries: this.state.countries.concat(uniqCountries) });
-       
+
   }
 }
 

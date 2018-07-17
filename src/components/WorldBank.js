@@ -1,45 +1,30 @@
 import React, { Component } from 'react';
+import { render } from 'react-dom';
+import { VictoryPie } from 'victory';
 import axios from 'axios';
 import NavBar from './NavBar';
+import BarCharts from './BarCharts';
+import BubbleCharts from './BubbleCharts';
+import PieCharts from './PieCharts';
+import TimeSeries from './TimeSeries';
+import './Victory.css';
 
 class WorldBank extends Component {
   constructor(props) {
-   super(props)
-   this.state = {
-    indicators: [],
-    topics: []
-   }
+   super(props);
  }
-
-
- getIndicators(){
-   axios.get('http://api.worldbank.org/v2/countries/all/indicators/SP.POP.TOTL?format=json')
-   .then(response => {
-     console.log("world bank indicators");
-     console.log(response.data);
-     this.setState({
-       indicators: response.data
-     });
-   });
- }
-
-getTopics(){
-  axios.get('http://api.worldbank.org/v2/topics?format=json')
-  .then(response => {
-    console.log("topics");
-    console.log(response.data);
-    this.setState({
-      topics: response.data
-    });
-  });
-}
 
 render(){
   return(
     <div>
     <NavBar />
-
-    </div>
+  <div style={{ display: "flex", flexWrap: "wrap" }} className="graphsDiv">
+    <BarCharts />
+    <BubbleCharts />
+    <PieCharts />
+    <TimeSeries />
+  </div>
+</div>
   );
    }
 }
