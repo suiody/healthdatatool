@@ -49,9 +49,9 @@ class DHS extends Component {
  }
 
 // when the program loads, make the API call to get data to populate dropdown menu
-  componentDidMount() {
-    this.getCountries(); // load countries first, other menus are dependent on country selection
-  }
+  // componentDidMount() {
+  //   this.getCountries(); // load countries first, other menus are dependent on country selection
+  // }
 
 // getKey and getValue are for providing unique key/values; there are sometimes overlapping values within the datasets
   getKey(){

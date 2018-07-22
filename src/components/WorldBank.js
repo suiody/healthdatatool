@@ -18,13 +18,14 @@ render(){
   return(
     <div>
     <NavBar />
-  <div style={{ display: "flex", flexWrap: "wrap" }} className="graphsDiv">
-    <BarCharts />
-    <BubbleCharts />
-    <PieCharts />
-    <TimeSeries />
+
+<div className="container-fluid" >    
+    <div style={{ display: "flex", flexWrap: "wrap" }} className="graphsDiv">
+      <BubbleCharts />
+    </div>
   </div>
 </div>
+
   );
    }
 }

@@ -5,11 +5,22 @@ import { VictoryChart,
   VictoryClipContainer
  } from 'victory';
 import './Victory.css';
+import jsonData from '../data/mmr.json';
 
 class BubbleCharts extends Component {
+
+  constructor(props){
+   super(props)
+     this.state = {
+       data: jsonData
+     };
+  }
+
+
   render() {
     return (
 
+<div className="container-fluid">
 
         <VictoryChart style={{ parent: { maxWidth: "50%" } }} className="bubbleCharts">
         <VictoryChart>
@@ -31,7 +42,7 @@ class BubbleCharts extends Component {
          </VictoryChart>
         </VictoryChart>
 
-
+</div>
     );
   }
 }
