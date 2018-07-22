@@ -3,10 +3,10 @@ import { render } from 'react-dom';
 import { VictoryPie } from 'victory';
 import axios from 'axios';
 import NavBar from './NavBar';
-import BarCharts from './BarCharts';
+// import BarCharts from './BarCharts';
 import BubbleCharts from './BubbleCharts';
-import PieCharts from './PieCharts';
-import TimeSeries from './TimeSeries';
+// import PieCharts from './PieCharts';
+// import TimeSeries from './TimeSeries';
 import './Victory.css';
 
 class WorldBank extends Component {
@@ -19,13 +19,12 @@ render(){
     <div>
     <NavBar />
 
-<div className="container-fluid" >    
-    <div style={{ display: "flex", flexWrap: "wrap" }} className="graphsDiv">
-      <BubbleCharts />
-    </div>
-  </div>
-</div>
-
+      <div className="container-fluid" >
+          <div style={{ display: "flex", flexWrap: "wrap" }} className="graphsDiv">
+            <BubbleCharts />
+          </div>
+        </div>
+      </div>
   );
    }
 }
