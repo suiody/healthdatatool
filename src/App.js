@@ -3,7 +3,10 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import About from './components/About';
 import DHS from './components/DHS';
-import WorldBank from './components/WorldBank';
+import CarbonDioxide from './components/CarbonDioxide';
+import MaternalMortalityRates from './components/MaternalMortalityRates';
+import MMRBubbleCharts from './components/MMRBubbleCharts';
+import MMRBarCharts from './components/MMRBarCharts';
 import Archives from './components/Archives';
 import './App.css';
 
@@ -16,7 +19,10 @@ class App extends Component {
         <main>
         <Route exact path='/' component={About}/>
          <Route exact path='/dhs' component={DHS}/>
-         <Route exact path='/worldbank' component={WorldBank}/>
+         <Route exact path='/maternalmortalityrates' component={MaternalMortalityRates}/>
+         <Route exact path='/environment' component={CarbonDioxide}/>
+         <Route path='/mmrbarcharts' component={MMRBarCharts}/>
+         <Route path='/mmrbubblecharts' component={MMRBubbleCharts}/>
          <Route exact path='/archives' component={Archives}/>
         </main>
       </div>

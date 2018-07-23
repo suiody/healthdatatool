@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { VictoryChart,
   VictoryPie
  } from 'victory';
-import './Victory.css';
+
 
 class PieCharts extends Component {
   render() {
