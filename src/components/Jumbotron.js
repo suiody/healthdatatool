@@ -9,7 +9,6 @@ class Jumbotron extends Component {
       <h1 className="display-3">{this.props.title}</h1>
      </div>
    </div>
-
     );
   }
 

@@ -95,21 +95,21 @@ class MMRBarCharts extends Component {
     let dateStr = date.toISOString().slice(0,10);
 
     return (
-      <div>
-      <NavBar />
+    <div>
+     <NavBar />
       <div className="container-fluid">
-      <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
-       {
-         this.state.countries.map((country) =>
-          <option key={this.getKey()}>{country ? country : "Select a country"}</option>
-         )
-       }
-      </select>
+        <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
+           {
+             this.state.countries.map((country) =>
+              <option key={this.getKey()}>{country ? country : "Select a country"}</option>
+             )
+           }
+        </select>
           <div className="plotBox" id="canvas">
             <VictoryChart
-            domainPadding={{x: 50, y: 5}}
-            style={{ parent: { maxWidth: "90%" }}}
-            className="barCharts">
+              domainPadding={{x: 50, y: 5}}
+              style={{ parent: { maxWidth: "90%" }}}
+              className="barCharts">
             <VictoryLabel
               text="Maternal Mortality Rates (deaths per 100,000 live births)"
               x={225} y={5}
@@ -125,9 +125,9 @@ class MMRBarCharts extends Component {
                 data={this.state.data}
               />
             </VictoryChart>
-              <p className="citation">Source: UN Maternal Mortality Estimation Group (2016). <br />Maternal mortality data. [Accessed {dateStr}]</p>
+            <p className="citation">Source: UN Maternal Mortality Estimation Group (2016). <br />Maternal mortality data. [Accessed {dateStr}]</p>
           </div>
-              <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
+          <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
         </div>
       </div>
     );

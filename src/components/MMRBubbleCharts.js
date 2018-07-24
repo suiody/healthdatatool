@@ -95,7 +95,7 @@ class MMRBubbleCharts extends Component {
     let date = new Date();
     let dateStr = date.toISOString().slice(0,10);
     return (
-      <div>
+      <div className="mmrBubbleCharts">
         <NavBar />
       <div className="container-fluid">
       <select className="dropDown" onChange={(e) => this.handleCountry(e)}>

@@ -1,11 +1,12 @@
 .citation {
-  font-size: 0.7rem;
-  justify-content: left;
+  font-size: 0.8rem;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .container-fluid {
-  max-width: 1000px;
-  min-width: 800px;
+  max-width: 800px;
+  min-width: 600px;
   margin: 0 auto 0 auto;
 }
 

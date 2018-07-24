@@ -77,6 +77,7 @@ class DHS extends Component {
   } catch(err){
     console.log(err);
     window.alert("There was a problem accessing the DHS database. Please try again later or search the archived data under the archives tab");
+    // refactor to use Redirect, import from React
     window.location = "/";
     return
   }
@@ -84,7 +85,6 @@ class DHS extends Component {
  // store the selected country from dropdown menu in state
   handleCountry(e){
     var selectedCountry = e.target.value;
-    console.log("selected country", selectedCountry);
     var result = this.state.countries.filter((co) =>
       co.CountryName === selectedCountry
    );
@@ -176,7 +176,6 @@ handleYear(e){
                      "&surveyIds=" + strSurveyYear +
                      "&indicatorIds=" + strIndicator +
                      "&f=json&perpage=1000&breakdown=all";
-    console.log("apiURL", apiURL);
     axios.get(apiURL)
     .then(response => {
       if(response.status === 200){
