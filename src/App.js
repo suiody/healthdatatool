@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-// import { Route, Router, BrowserRouter } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import About from './components/About';
 import DHS from './components/DHS';
-import CarbonDioxide from './components/CarbonDioxide';
 import MaternalMortalityRates from './components/MaternalMortalityRates';
 import MMRBubbleCharts from './components/MMRBubbleCharts';
 import MMRBarCharts from './components/MMRBarCharts';
@@ -20,7 +18,6 @@ class App extends Component {
         <Route exact path='/' component={About}/>
          <Route exact path='/dhs' component={DHS}/>
          <Route exact path='/maternalmortalityrates' component={MaternalMortalityRates}/>
-         <Route exact path='/environment' component={CarbonDioxide}/>
          <Route path='/mmrbarcharts' component={MMRBarCharts}/>
          <Route path='/mmrbubblecharts' component={MMRBubbleCharts}/>
          <Route exact path='/archives' component={Archives}/>

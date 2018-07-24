@@ -1,7 +1,3 @@
-.container-fluid {
-  min-width: 800px;
-  max-width: 1000px;
-}
 
 .dropDown {
   display: inline-block;
@@ -10,7 +6,6 @@
   margin-left: 1rem;
   margin-bottom: 1rem;
   margin-top: 1rem;
-  position: relative
 }
 
 .instructions {
@@ -29,24 +24,16 @@
   margin: 1rem 1rem;
 }
 
-.plotBox {
-  display: relative;
-  margin-top: 2rem;
-}
-
-.plotTitle {
+.citation {
+  margin: 0 auto 0 auto;
+  max-width: 50%;
+  text-align: center;
   font-size: 1rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
-.citationDHS {
-  margin-top: 5px;
-  margin-bottom: 10px;
-  font-size: 0.5rem;
 }
 
 .downloadButton{
   margin: 1rem 1rem;
+}
+
+.queryButton {
 }

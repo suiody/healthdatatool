@@ -1,6 +1,8 @@
 
 .maternalHealth {
   margin-top: 6rem;
+  max-width: 800px;
+  min-width: 600px;
 }
 
 .graphic {
@@ -17,4 +19,14 @@
    color: white;
    margin-top: 4rem;
    text-shadow: 2px 2px gray;
+}
+
+a {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-size: 0.7rem;
+}
+
+.externalLinks {
+  text-align: center;
 }

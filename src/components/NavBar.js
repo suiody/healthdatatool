@@ -21,10 +21,10 @@ class NavBar extends Component {
                 <Link className="nav-link" to="/maternalmortalityrates">Maternal Health</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/environment">Environment</Link>
+                <Link className="nav-link" to="/dhs">Demographic Health Survey</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/dhs">Demographic Health Survey</Link>
+                <Link className="nav-link" to="/archives">Archived Data</Link>
               </li>
             </ul>
             </div>

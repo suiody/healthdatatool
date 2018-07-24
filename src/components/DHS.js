@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import './DHS.css';
 import axios from 'axios';
 import NavBar from './NavBar';
-import './react_plot_style.css';
-import {XYPlot,XAxis, YAxis,VerticalBarSeries} from 'react-vis';
 import html2canvas from 'html2canvas';
+import { VictoryChart,
+  VictoryBar,
+  VictoryLabel,
+  VictoryAxis
+ } from 'victory';
+import './BarCharts.css';
 
 
 class DHS extends Component {
@@ -12,15 +16,15 @@ class DHS extends Component {
   constructor(props) {
    super(props)
    this.state = {
-     countries: ["Select a country"], //  countries to populate dropdown menu
-     years: ["Select a year"], // suvey years to populate dropdown menu
-     indicators: ["Select an indicator"], // indicators to populate dropdown menu
+     countries: [], //  countries to populate dropdown menu
+     years: [], // suvey years to populate dropdown menu
+     indicators: [], // indicators to populate dropdown menu
      selectedCountry: [], // current country selected from dropdown
      selectedYear: [], // current year selected from dropdown
      selectedIndicator: [], //current indicator selected from dropdown,
-     characteristics: ["Select a category"], // holds characteristic groups for the selected indicator,
+     characteristics: [], // holds characteristic groups for the selected indicator,
      selectedCharacteristic: [], // selected characteristic
-     listCharGroups: ["Select a category"],
+     listCharGroups: [],
      arrData: {}, // stores formatted characterstics/values for graphing
      strCountry: '', // keeps track of the countryId for DHS query
      strSurveyYear: '', // keeps track of surveyId for DHS query
@@ -49,9 +53,9 @@ class DHS extends Component {
  }
 
 // when the program loads, make the API call to get data to populate dropdown menu
-  // componentDidMount() {
-  //   this.getCountries(); // load countries first, other menus are dependent on country selection
-  // }
+  componentDidMount() {
+    this.getCountries(); // load countries first, other menus are dependent on country selection
+  }
 
 // getKey and getValue are for providing unique key/values; there are sometimes overlapping values within the datasets
   getKey(){
@@ -70,28 +74,39 @@ class DHS extends Component {
    try {
     let response = await axiosInstance.get('/countries')
     if(response.status === 200){
-      this.setState({
-        countries: this.state.countries.concat(response.data.Data)
-      })
+      let countries = this.state.countries.concat(response.data.Data);
+
+      if (countries.length >= 2){
+        countries.unshift("Select a country");
+        this.setState({countries: countries});
+      }
     }
   } catch(err){
     console.log(err);
     window.alert("There was a problem accessing the DHS database. Please try again later or search the archived data under the archives tab");
-    // refactor to use Redirect, import from React
     window.location = "/";
     return
   }
  }
  // store the selected country from dropdown menu in state
   handleCountry(e){
-    var selectedCountry = e.target.value;
-    var result = this.state.countries.filter((co) =>
-      co.CountryName === selectedCountry
-   );
-    var strCountry = result[0].DHS_CountryCode.toString();
-    this.setState({ strCountry: strCountry, selectedCountry: selectedCountry });
-    this.setState({ isCountryDisabled: true});
-    this.getSurveyYears(strCountry);
+    let selectedCountry = e.target.value;
+    let result = '';
+    let strCountry = '';
+
+    if (selectedCountry.length > 1){
+       result = this.state.countries.filter((co) =>
+        co.CountryName === selectedCountry
+     );
+    }
+     if (result){
+      strCountry = result[0].DHS_CountryCode.toString();
+     }
+    if ( strCountry.length > 1){
+      this.setState({ strCountry: strCountry, selectedCountry: selectedCountry });
+      this.setState({ isCountryDisabled: true});
+      this.getSurveyYears(strCountry);
+    }
    }
 
 // query DHS API survey years based on country selection
@@ -104,9 +119,13 @@ async getSurveyYears(strCountry){
     try {
     let response = await axiosInstance.get(apiURL)
       if(response.status === 200){
-      this.setState({
-        years: this.state.years.concat(response.data.Data)
-      })
+        let years = this.state.years.concat(response.data.Data);
+        years.unshift("Select a year");
+         if (years.length >= 2){
+            this.setState({
+              years: years
+            });
+          }
      }
     } catch(err){
      console.log(err);
@@ -118,17 +137,20 @@ async getSurveyYears(strCountry){
 }
 // handle survey year selection; extract surveyId and store selectedYear in state
 handleYear(e){
-   var selectedYear = e.target.value;
-   this.setState({ selectedYear: selectedYear });
-   console.log("selected year", selectedYear);
-   this.state.years.shift(); // get rid of the placeholder element
-   var result = this.state.years.filter((yr) =>
+   let selectedYear = e.target.value;
+   if (selectedYear.length > 1){
+    this.setState({ selectedYear: selectedYear });
+   }
+   let result = this.state.years.shift(); // get rid of the placeholder element
+   result = this.state.years.filter((yr) =>
      yr.SurveyYear.toString() === selectedYear
    );
-   var strSurveyYear = result[0].SurveyId;
-   this.setState({ strSurveyYear: strSurveyYear });
-   this.setState({ isYearDisabled: true });
-   this.getIndicators(this.state.strCountry,strSurveyYear);
+   let strSurveyYear = result[0].SurveyId;
+   if (strSurveyYear.length > 1){
+     this.setState({ strSurveyYear: strSurveyYear });
+     this.setState({ isYearDisabled: true });
+     this.getIndicators(this.state.strCountry,strSurveyYear);
+   }
 }
 
 // fetch the indicator data based on country and year selection from DHS API
@@ -142,9 +164,15 @@ handleYear(e){
    try {
    let response = await axiosInstance.get(apiURL)
      if(response.status === 200){
-     this.setState({
-       indicators: this.state.indicators.concat(response.data.Data)
-     })
+
+      let indicators = [];
+      indicators = this.state.indicators.concat(response.data.Data);
+      indicators.unshift("Select an indicator");
+      if (indicators.length >= 2){
+        this.setState({
+          indicators: indicators
+        });
+      }
    }
    } catch(err){
      console.log(err);
@@ -156,35 +184,43 @@ handleYear(e){
 
 // store the selected indicator in state
  handleIndicator(e){
-   var selectedIndicator = e.target.value;
-   this.state.indicators.shift(); // remove placeholder element
-   var result = this.state.indicators.filter((co) =>
+   let selectedIndicator = e.target.value;
+   let result = this.state.indicators.shift(); // remove placeholder element
+   let strIndicator = '';
+   result = this.state.indicators.filter((co) =>
     co.Label.toString() === selectedIndicator
    );
-   var strIndicator = result[0].IndicatorId;
-   this.setState({selectedIndicator: selectedIndicator});
-   this.setState({IndicatorId: e.target.value});
-   this.setState({ isIndicatorDisabled: true });
-   this.getCharacteristics(this.state.strCountry,this.state.strSurveyYear,strIndicator);
+   if (result){
+      strIndicator = result[0].IndicatorId;
+   }
+   if (strIndicator.length > 1){
+     this.setState({selectedIndicator: selectedIndicator});
+     this.setState({IndicatorId: e.target.value});
+     this.setState({ isIndicatorDisabled: true });
+     this.getCharacteristics(this.state.strCountry,this.state.strSurveyYear,strIndicator);
+   }
  }
 
 // build the query based on user's selection to obtain the data from DHS API
  async getCharacteristics(strCountry,strSurveyYear,strIndicator){
-   var gAPIDomain = "https://api.dhsprogram.com/rest/dhs/";
+   let gAPIDomain = "https://api.dhsprogram.com/rest/dhs/";
    //Create URL to obtain data.
-   var apiURL = gAPIDomain + "data?countryIds=" + strCountry +
+   let apiURL = gAPIDomain + "data?countryIds=" + strCountry +
                      "&surveyIds=" + strSurveyYear +
                      "&indicatorIds=" + strIndicator +
                      "&f=json&perpage=1000&breakdown=all";
+   let arrData = {};
+   let inputData = [];
+
     axios.get(apiURL)
     .then(response => {
       if(response.status === 200){
-      var arrData = {};
-      var inputData = response.data.Data;
+       inputData = response.data.Data;
     } else {
       return window.alert("The was a problem accessing the DHS database. Please try back later or search the archived data under the archives tab");
     }
    // format the characteristic labels for charting
+   if (inputData){
      inputData.forEach(function(value, index) {
        if(!arrData[value.CharacteristicCategory]){
           arrData[value.CharacteristicCategory] = {};
@@ -202,18 +238,27 @@ handleYear(e){
          }
       });
       this.setState({ arrData: arrData });
-      // populate the data characteristics drop down menu
-      var listCharGroups = this.state.listCharGroups.concat(Object.keys(arrData));
-        this.setState({ characteristics: listCharGroups, isCharacteristicDisabled: false});
-      });
+     }
+     // populate the data characteristics drop down menu
+     let listCharGroups =  [];
+     listCharGroups = this.state.listCharGroups.concat(Object.keys(arrData));
+     listCharGroups.unshift("Select a category");
+     if (listCharGroups.length > 1){
+       this.setState({ characteristics: listCharGroups, isCharacteristicDisabled: false});
+     }
+    });
   }
+
 
 // store selected characterstic in state
 handleCharacteristic(e){
-  var selectedCharacteristic = e.target.value;
-  this.setState({selectedCharacteristic: selectedCharacteristic});
-  var strCharGroup = selectedCharacteristic;
-  this.graphData(strCharGroup);
+  let selectedCharacteristic = '';
+  selectedCharacteristic = e.target.value;
+  if (selectedCharacteristic.length > 0){
+    this.setState({selectedCharacteristic: selectedCharacteristic});
+    let strCharGroup = selectedCharacteristic;
+    this.graphData(strCharGroup);
+  }
 }
 
 // prep data for plotting
@@ -242,9 +287,8 @@ graphData(strCharGroup){
 
  // make the menu drop downs available again for a new query
 handleQuery(e){
- var tmp = this.state.countries;
- tmp.unshift("Select a country");
- this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: ["Select a year"], indicators: ["Select an indicator"], characteristics: ["Select a category"], data: [], xvalues: [], yvalues: [] });
+ let tmp = this.state.countries;
+ this.setState({isCountryDisabled: false, isYearDisabled: true, isIndicatorDisabled: true, isCharacteristicDisabled: true, selectedCountry: [], selectedYear: [], selectedIndicator: [], selectedCharacteristic: [], countries: tmp, years: [], indicators: [], characteristics: [], data: [], xvalues: [], yvalues: [] });
 }
 
 // function to convert plot canvas to image
@@ -282,8 +326,13 @@ saveCSV(){
 }
 
   render(){
-    var date = new Date();
-    var dateStr = date.toISOString().slice(0,10);
+    let date = new Date();
+    let dateStr = date.toISOString().slice(0,10);
+    let divStyle = {
+      padding: '25px',
+      width: '600px',
+      height: '520px'
+    }
 
     return (
 <div>
@@ -298,8 +347,9 @@ saveCSV(){
             <li><strong>Select a category</strong> to graph from the fourth dropdown. <br/>To change to a different category, simply select a new category from the dropdown.</li>
             <li>To perform a new query, click on the <strong>"new query"</strong> button.</li>
          </ol>
-        </div>
 
+        <button className="queryButton" onClick={(e) => this.handleQuery(e)} >New Query</button>
+        </div>
          <select className="dropDown" onChange={(e) => this.handleCountry(e)} disabled={this.state.isCountryDisabled}>
           {
             this.state.countries.map((country) =>
@@ -328,28 +378,54 @@ saveCSV(){
             )
           }
         </select>
-        <div>
-          <button onClick={(e) => this.handleQuery(e)}>New Query</button>
-        </div>
-
-      <div className="plotBox" id="canvas">
-      <p className="plotTitle">{this.state.selectedCountry} {this.state.selectedYear} {this.state.selectedIndicator}</p>
-        <XYPlot xType="ordinal" height={400} width={500} margin={{bottom: 200, left: 60}}>
-          <XAxis tickFormat={v => `${v}`} tickPadding={20} tickLabelAngle={-60}
-          style={{ fontSize: 'small'}}
+        <div className="plotBox" id="canvas" style={divStyle}>
+          <VictoryChart
+            domainPadding={{x: 40, y: 5}}
+            >
+          <VictoryLabel
+            text={this.state.selectedCountry}
+            x={225} y={5}
+            textAnchor="middle"
           />
-          <YAxis
-          style={{fontSize: 'small'}} tickPadding={20}
+          <VictoryLabel
+            text={this.state.selectedYear}
+            x={225} y={20}
+            textAnchor="middle"
           />
-          <VerticalBarSeries
+          <VictoryLabel
+            text={this.state.selectedIndicator}
+            x={225} y={35}
+            textAnchor="middle"
+          />
+          <VictoryAxis
+            style={{ axis: { stroke: 'black' },
+              axisLabel: { fontSize: 12, fill: 'black' },
+              ticks: { stroke: 'black' },
+              tickLabels: { fontSize: 12, fill: 'black' }
+            }} dependentAxis
+          />
+          <VictoryAxis
+            style={{ axis: { stroke: 'black' },
+              axisLabel: { fontSize: 12 },
+              ticks: { stroke: 'black' },
+              tickLabels: { fontSize: 10, fill: 'black', angle: -45, padding: 10, textAnchor: 'end' }
+            }}
+          />
+          <VictoryBar
+            style={{
+              data: { fill: "blue" },
+             }}
             data={this.state.data}
+            alignment="start"
           />
-        </XYPlot>
-          <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
+          </VictoryChart>
+        </div>
       </div>
+      <div className="citation">
       <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
       <button className="downloadCSVButton" onClick={() => this.saveCSV()}>Save CSV</button>
-    </div>
+        <p>The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
+      </div>
   </div>
       );
     }

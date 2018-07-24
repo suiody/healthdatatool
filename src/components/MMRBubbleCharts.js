@@ -106,7 +106,9 @@ class MMRBubbleCharts extends Component {
        }
       </select>
       <div className="plotBox" id="canvas">
-          <VictoryChart style={{ parent: { maxWidth: "90%" } }} className="bubbleCharts">
+          <VictoryChart
+            style={{ parent: { maxWidth: "90%" } }}
+            className="bubbleCharts">
           <VictoryChart>
               <VictoryLabel
                 text="Maternal Mortality Rates (deaths per 100,000 live births)"

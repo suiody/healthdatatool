@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import NavBar from './NavBar';
-import './react_plot_style.css';
-import {XYPlot,XAxis, YAxis,VerticalBarSeries} from 'react-vis';
 import './Archives.css';
 import html2canvas from 'html2canvas';
+import { VictoryChart,
+  VictoryBar,
+  VictoryLabel,
+  VictoryAxis
+ } from 'victory';
+import './BarCharts.css';
 
 class Archives extends Component {
 
@@ -39,24 +43,28 @@ class Archives extends Component {
    this.handleQuery = this.handleQuery.bind(this);
  }
 
- // componentDidMount(){
- //   this.getInfantMortality();
- // }
+ componentDidMount(){
+   this.getInfantMortality();
+ }
 
  getKey(){
    return this.keyCount++;
  }
 
 async getInfantMortality(){
+  let infantData = [];
   var axiosInstance = axios.create({
     baseURL: process.env.REACT_APP_API_URL
   })
   try {
    let response = await axiosInstance.get('/infant_mortalities.json')
    if(response.status === 200){
-     this.setState({
-       infantData: response.data
-     })
+    infantData = response.data;
+     if (infantData.length > 1){
+       this.setState({
+         infantData: response.data
+       });
+     }
    }
  } catch(err){
    console.log(err);
@@ -67,15 +75,19 @@ async getInfantMortality(){
 }
 
 async getChildMortality(){
-  var axiosInstance = axios.create({
+  let childData = [];
+  let axiosInstance = axios.create({
     baseURL: process.env.REACT_APP_API_URL
   })
   try {
    let response = await axiosInstance.get('/under_five_mortalities.json')
    if(response.status === 200){
-     this.setState({
-       childData: response.data
-     })
+     childData = response.data;
+     if (childData.length > 1){
+       this.setState({
+         childData: response.data
+       });
+     }
    }
  } catch(err){
    console.log(err);
@@ -92,136 +104,150 @@ populateData(strIndicator){
   var uniqCountries = [];
 
   if (selectedIndicator === "Infant Mortality Rate"){
-      var infantData = this.state.infantData;
+      let infantData = this.state.infantData;
+      let arrDataInf = this.state.arrDataInf;
 
-          var arrDataInf = this.state.arrDataInf;
+     if (infantData.length > 0){
+       infantData.forEach(function(value,index){
+          hash = {};
+           hash["CountryName"] = value.CountryName;
+           hash["SurveyYear"] = value.SurveyYear;
+           hash["Indicator"] = value.Indicator;
+           hash["CharacteristicLabel"] = value.CharacteristicLabel;
+           hash["Value"] = value.Value;
+           arrDataInf.push(hash);
+       });
 
-            infantData.forEach(function(value,index){
-               hash = {};
-                hash["CountryName"] = value.CountryName;
-                hash["SurveyYear"] = value.SurveyYear;
-                hash["Indicator"] = value.Indicator;
-                hash["CharacteristicLabel"] = value.CharacteristicLabel;
-                hash["Value"] = value.Value;
-                arrDataInf.push(hash);
-            });
-
-          // array to hold country values, contains duplicates
-           tmp = [];
-           arrDataInf.forEach(function(value,index){
-             tmp.push(value.CountryName);
-           });
-           // some countries are listed multiple times because they have multiple survey years
-           uniqCountries = Array.from(new Set(tmp));
-           console.log("uniqCountries", uniqCountries);
-          this.setState({ countries: this.state.countries.concat(uniqCountries) });
-
-  } else if(selectedIndicator === "Under Five Mortality Rate"){
-    var childData = this.state.childData;
-
-        var arrDataCh = this.state.arrDataCh;
-
-        childData.forEach(function(value,index){
-            hash = {};
-            hash["CountryName"] = value.CountryName;
-            hash["SurveyYear"] = value.SurveyYear;
-            hash["Indicator"] = value.Indicator;
-            hash["CharacteristicLabel"] = value.CharacteristicLabel;
-            hash["Value"] = value.Value;
-            arrDataCh.push(hash);
+       // array to hold country values, contains duplicates
+        tmp = [];
+        arrDataInf.forEach(function(value,index){
+          tmp.push(value.CountryName);
         });
-
-         tmp = [];
-         arrDataCh.forEach(function(value,index){
-           tmp.push(value.CountryName);
-         });
-         // some countries are listed multiple times because they have multiple survey years
-
-         uniqCountries = Array.from(new Set(tmp));
-         console.log("uniqCountries", uniqCountries);
+        // some countries are listed multiple times because they have multiple survey years
+        uniqCountries = Array.from(new Set(tmp));
         this.setState({ countries: this.state.countries.concat(uniqCountries) });
+     }
+  } else if(selectedIndicator === "Under Five Mortality Rate"){
+    let childData = this.state.childData;
+    let arrDataCh = this.state.arrDataCh;
+    if (childData.length > 0){
+      childData.forEach(function(value,index){
+          hash = {};
+          hash["CountryName"] = value.CountryName;
+          hash["SurveyYear"] = value.SurveyYear;
+          hash["Indicator"] = value.Indicator;
+          hash["CharacteristicLabel"] = value.CharacteristicLabel;
+          hash["Value"] = value.Value;
+          arrDataCh.push(hash);
+      });
 
+       tmp = [];
+       arrDataCh.forEach(function(value,index){
+         tmp.push(value.CountryName);
+       });
+       // some countries are listed multiple times because they have multiple survey years
+       uniqCountries = Array.from(new Set(tmp));
+       this.setState({ countries: this.state.countries.concat(uniqCountries) });
+    }
   }
 }
 
  // store the selected indicator in state
   handleIndicator(e){
-    var selectedIndicator = e.target.value;
-    var strIndicator = selectedIndicator.toString();
-    this.setState({selectedIndicator: selectedIndicator});
-    this.setState({ isIndicatorDisabled: true });
-    this.setState({ isCountryDisabled: false });
-    this.populateData(strIndicator);
+    let selectedIndicator = e.target.value;
+    let strIndicator = '';
+
+    if (selectedIndicator.length > 1){
+      strIndicator = selectedIndicator.toString();
+      this.setState({selectedIndicator: selectedIndicator});
+      this.setState({ isIndicatorDisabled: true });
+      this.setState({ isCountryDisabled: false });
+      this.populateData(strIndicator);
+    }
   }
 
   // store the selected country from dropdown menu in state
    handleCountry(e){
-     var selectedCountry = e.target.value;
-     this.setState({ selectedCountry: selectedCountry });
-     this.setState({ isCountryDisabled: true });
-     this.setState({ isCharacteristicDisabled: false });
+     let selectedCountry = e.target.value;
+     if (selectedCountry.length > 1){
+       this.setState({ selectedCountry: selectedCountry });
+       this.setState({ isCountryDisabled: true });
+       this.setState({ isCharacteristicDisabled: false });
+     }
    }
 
  // store selected characterstic in state
  handleCharacteristic(e){
-   var selectedCharacteristic = e.target.value;
-   this.setState({selectedCharacteristic: selectedCharacteristic});
-   var strCharGroup = selectedCharacteristic;
-   this.getGraph(strCharGroup, this.state.selectedCountry, this.state.selectedIndicator);
+   let selectedCharacteristic = e.target.value;
+   let strCharGroup = '';
+
+   if (selectedCharacteristic.length > 1){
+     this.setState({selectedCharacteristic: selectedCharacteristic});
+     strCharGroup = selectedCharacteristic;
+     this.getGraph(strCharGroup, this.state.selectedCountry, this.state.selectedIndicator);
+   }
  }
 
  getGraph(strCharGroup, selectedCountry, selectedIndicator){
-   var years = this.state.years;
-   var values = this.state.values;
-   var xAxisCategories = [];
-   var yAxisValues = [];
-   var data = this.state.data;
-   var key;
-   var value;
+   let years = this.state.years;
+   let values = this.state.values;
+   let xAxisCategories = [];
+   let yAxisValues = [];
+   let data = this.state.data;
+   let key;
+   let value;
 
    if (selectedIndicator === "Infant Mortality Rate"){
-     var arrDataInf = this.state.arrDataInf;
-      arrDataInf.forEach(function(value,index){
-       if (value.CountryName === selectedCountry){
-         years.push(value.SurveyYear);
-         values.push(value.Value);
-       }
-       });
-       this.setState({years: years, values: values });
+     let arrDataInf = this.state.arrDataInf;
+     if (arrDataInf.length > 1){
+       arrDataInf.forEach(function(value,index){
+          if (value.CountryName === selectedCountry){
+            years.push(value.SurveyYear);
+            values.push(value.Value);
+          }
+        });
+        this.setState({years: years, values: values });
+     }
 
-       xAxisCategories = this.state.years;
-       yAxisValues = this.state.values;
-
-       for (var i = 0; i < xAxisCategories.length; i++){
-          key = xAxisCategories[i].toString();
-          value = yAxisValues[i];
-         data.push({x: key, y: value});
-       }
+      xAxisCategories = this.state.years;
+      yAxisValues = this.state.values;
+      if (xAxisCategories.length >= 1 && yAxisValues.length >= 1){
+        for (var i = 0; i < xAxisCategories.length; i++){
+           key = xAxisCategories[i].toString();
+           value = yAxisValues[i];
+          data.push({x: key, y: value});
+        }
+      }
     } else if (selectedIndicator === "Under Five Mortality Rate"){
-      var arrDataCh = this.state.arrDataCh;
-       arrDataCh.forEach(function(value,index){
-         if (value.CountryName === selectedCountry){
-           years.push(value.SurveyYear);
-           values.push(value.Value);
-         }
-       });
-       this.setState({years: years, values: values });
+      let arrDataCh = this.state.arrDataCh;
+
+      if(arrDataCh.length >= 1){
+        arrDataCh.forEach(function(value,index){
+          if (value.CountryName === selectedCountry){
+            years.push(value.SurveyYear);
+            values.push(value.Value);
+          }
+        });
+        this.setState({years: years, values: values });
+      }
 
        xAxisCategories = this.state.years;
        yAxisValues = this.state.values;
 
+     if (xAxisCategories.length >= 1 && yAxisValues.length >= 1){
        for (var j = 0; j < xAxisCategories.length; j++){
           key = xAxisCategories[j].toString();
           value = yAxisValues[j];
          data.push({x: key, y: value});
        }
+     }
     }
  }
 
 // make the menu drop downs available again for a new query
- handleQuery(e){
-  this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"], data: [], years: [], values: [] });
- }
+handleQuery(e){
+ this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"], data: [], years: [], values: [] });
+}
 
 // function to convert div to image
 saveImage(){
@@ -273,6 +299,7 @@ saveCSV(){
                  <li><strong>Select a category</strong> to graph from the fourth dropdown. <br/>To change to a different category, simply select a new category from the dropdown.</li>
                  <li>To perform a new query, click on the <strong>"new query"</strong> button.</li>
               </ol>
+              <button onClick={(e) => this.handleQuery(e)} className="newQueryButton">New Query</button>
             </div>
 
       <select className="dropDown" onChange={(e) => this.handleIndicator(e)}  disabled={this.state.isIndicatorDisabled}>
@@ -297,32 +324,48 @@ saveCSV(){
         )
       }
     </select>
-    <div>
-      <button onClick={(e) => this.handleQuery(e)}>New Query</button>
-    </div>
+    <div className="plotBox" id="canvas">
+      <VictoryChart
+        domainPadding={{x: 40, y: 5}}
+        >
+      <VictoryLabel
+          text={this.state.selectedCountry}
+          x={225} y={20}
+          textAnchor="middle"
+        />
+      <VictoryLabel
+        text={this.state.selectedIndicator}
+        x={225} y={5}
+        textAnchor="middle"
+      />
 
-<div className="plotBox" id="canvas">
-  <h6 className="plotTitle">{this.state.selectedIndicator} {this.state.selectedCountry}</h6>
-    <XYPlot xType="ordinal" height={300} width={400} xDistance={10} margin={{ bottom: 150 }}>
-      <XAxis tickFormat={v => `${v}`} tickLabelAngle={-70} tickPadding={20}
-      style={{
-        line: {stroke: '#ADDDE1'},
-        ticks: {stroke: '#ADDDE1'},
-        text: {stroke: 'none', fill: '#6b6b76', fontWeight: 700, fontSize: 'medium'}
-      }}
+      <VictoryAxis
+        style={{ axis: { stroke: 'black' },
+          axisLabel: { fontSize: 12, fill: 'black' },
+          ticks: { stroke: 'black' },
+          tickLabels: { fontSize: 12, fill: 'black' }
+        }} dependentAxis
       />
-      <YAxis
-      position="end"
-      style={{fontSize: 'medium'}}
+      <VictoryAxis
+        style={{ axis: { stroke: 'black' },
+          axisLabel: { fontSize: 12 },
+          ticks: { stroke: 'black' },
+          tickLabels: { fontSize: 10, fill: 'black', angle: -45, padding: 10, textAnchor: 'end' }
+        }}
       />
-      <VerticalBarSeries
+      <VictoryBar
+        style={{
+          data: { fill: "blue" },
+         }}
         data={this.state.data}
+        alignment="start"
       />
-    </XYPlot>
+      </VictoryChart>
+    </div>
+    <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
+    <button className="downloadCSVButton" onClick={() => this.saveCSV()}>Save CSV</button>
     <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
-</div>
-  <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
-  <button className="downloadCSVButton" onClick={() => this.saveCSV()}>Save CSV</button>
+
 </div>
 </div>
    );
@@ -330,4 +373,4 @@ saveCSV(){
 
 }
 
-export default Archives
+export default Archives;

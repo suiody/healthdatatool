@@ -11,11 +11,18 @@
 }
 
 .citationDHS {
-  margin-top: 5px;
   margin-bottom: 10px;
-  font-size: 0.5rem;
+  font-size: 1rem;
 }
 
 .downloadButton {
   margin: 1rem 1rem;
+}
+
+.newQueryButton {
+  display: relative;
+}
+
+.dropDown {
+  display: inline-flex;
 }
