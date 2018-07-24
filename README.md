@@ -13,9 +13,7 @@ The completed app will:
 - have access to some archived data for popular datasets, in the event that one of the databases is not accessible, enabled by a back-end rails API
 
 The app is currently under development, however, if you'd like to check the current progress, check out this short demo of graphing data from different databases through the app.
-![alt text](https://raw.githubusercontent.com/cheneyshreve/healthdatatool/master/app/assets/images/hdt_demo.gif)
-
-
+![alt text](https://raw.githubusercontent.com/cheneyshreve/healthdatatool/master/src/images/hdt_demo.gif)
 
 Download & Install
 - fork or clone the rails repository (backend Ruby-on-Rails) 'healthdatatool-api'
