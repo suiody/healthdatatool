@@ -246,7 +246,7 @@ populateData(strIndicator){
 
 // make the menu drop downs available again for a new query
 handleQuery(e){
- this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a country"], data: [], years: [], values: [] });
+ this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a county"], data: [], years: [], values: [] });
 }
 
 // function to convert div to image
