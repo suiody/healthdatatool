@@ -125,7 +125,8 @@ populateData(strIndicator){
         });
         // some countries are listed multiple times because they have multiple survey years
         uniqCountries = Array.from(new Set(tmp));
-        this.setState({ countries: this.state.countries.concat(uniqCountries) });
+        uniqCountries.unshift("Select a country");
+        this.setState({ countries: uniqCountries });
      }
   } else if(selectedIndicator === "Under Five Mortality Rate"){
     let childData = this.state.childData;
@@ -147,7 +148,8 @@ populateData(strIndicator){
        });
        // some countries are listed multiple times because they have multiple survey years
        uniqCountries = Array.from(new Set(tmp));
-       this.setState({ countries: this.state.countries.concat(uniqCountries) });
+       uniqCountries.unshift("Select a country");
+       this.setState({ countries: uniqCountries });
     }
   }
 }
@@ -169,7 +171,7 @@ populateData(strIndicator){
   // store the selected country from dropdown menu in state
    handleCountry(e){
      let selectedCountry = e.target.value;
-     if (selectedCountry.length > 1){
+     if (selectedCountry.length > 0){
        this.setState({ selectedCountry: selectedCountry });
        this.setState({ isCountryDisabled: true });
        this.setState({ isCharacteristicDisabled: false });
@@ -213,8 +215,8 @@ populateData(strIndicator){
       yAxisValues = this.state.values;
       if (xAxisCategories.length >= 1 && yAxisValues.length >= 1){
         for (var i = 0; i < xAxisCategories.length; i++){
-           key = xAxisCategories[i].toString();
-           value = yAxisValues[i];
+          key = xAxisCategories[i].toString();
+          value = yAxisValues[i];
           data.push({x: key, y: value});
         }
       }
@@ -228,7 +230,7 @@ populateData(strIndicator){
             values.push(value.Value);
           }
         });
-        this.setState({years: years, values: values });
+        this.setState({years: years, values: values});
       }
 
        xAxisCategories = this.state.years;
@@ -246,7 +248,7 @@ populateData(strIndicator){
 
 // make the menu drop downs available again for a new query
 handleQuery(e){
- this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: ["Select a county"], data: [], years: [], values: [] });
+ this.setState({isCountryDisabled: true, isIndicatorDisabled: false, isCharacteristicDisabled: true, selectedCountry: [], selectedIndicator: [], selectedCharacteristic: [], countries: [], data: [], years: [], values: [] });
 }
 
 // function to convert div to image
