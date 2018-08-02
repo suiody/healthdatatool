@@ -1,0 +1,10 @@
+.jumbotron-fluid {
+  background-image: url(../images/checkup.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  color: white;
+  text-shadow: 2px 2px gray;
+  margin-bottom: 0.5rem;
+  height: 30vh;
+}

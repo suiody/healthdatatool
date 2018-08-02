@@ -1,6 +1,23 @@
 .plotBox {
-  display: relative;
-  margin: 2rem 2rem;
+ padding-bottom: 20px;
+}
+
+.citation {
+  margin: 0 auto 0 auto;
+  max-width: 50%;
+  vertical-align: center;
+  font-size: 1rem;
+  padding-bottom: 10rem;
+}
+
+button {
+  margin: 1rem 1rem;
+}
+
+.menus {
+   vertical-align: center;
+   display: inline-block;
+   margin-bottom: 0;
 }
 
 .plotTitle {
@@ -11,8 +28,9 @@
 }
 
 .citationDHS {
-  margin-bottom: 10px;
-  font-size: 1rem;
+  margin-bottom: 2rem;
+  font-size: 0.75rem;
+  text-align: center;
 }
 
 .downloadButton {

@@ -1,24 +1,8 @@
 
-.maternalHealth {
-  margin-top: 6rem;
-  max-width: 800px;
-  min-width: 600px;
-}
-
 .graphic {
-  min-width: 250px;
-  max-width: 300px;
-  margin: 0 auto 0 auto;
-}
-
-.jumbotron-mmr {
-   background-image: url(../images/checkup.jpg);
-   background-position: center center;
-   background-repeat: no-repeat;
-   background-size: 100%;
-   color: white;
-   margin-top: 4rem;
-   text-shadow: 2px 2px gray;
+  max-width: 400px;
+  min-width: 300px;
+  margin-top: 1rem;
 }
 
 a {
@@ -29,4 +13,18 @@ a {
 
 .externalLinks {
   text-align: center;
+}
+
+.container {
+  display: table;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+aside, .col-md-6 {
+  display: table-cell;
+  vertical-align: top;
+  height: 100%;
+  margin-top: 2rem;
+  padding-top: 20px;
 }

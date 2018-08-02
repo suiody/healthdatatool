@@ -8,7 +8,7 @@ import { VictoryChart,
   VictoryLabel,
   VictoryAxis
  } from 'victory';
-import './BarCharts.css';
+
 
 
 class DHS extends Component {
@@ -52,7 +52,7 @@ class DHS extends Component {
    this.handleCharacteristic = this.handleCharacteristic.bind(this);
  }
 
-// when the program loads, make the API call to get data to populate dropdown menu
+// // when the program loads, make the API call to get data to populate dropdown menu
   componentDidMount() {
     this.getCountries(); // load countries first, other menus are dependent on country selection
   }
@@ -249,7 +249,6 @@ handleYear(e){
     });
   }
 
-
 // store selected characterstic in state
 handleCharacteristic(e){
   let selectedCharacteristic = '';
@@ -328,19 +327,14 @@ saveCSV(){
   render(){
     let date = new Date();
     let dateStr = date.toISOString().slice(0,10);
-    let divStyle = {
-      padding: '25px',
-      width: '600px',
-      height: '520px'
-    }
 
     return (
 <div>
   <NavBar />
-     <div className="container-fluid">
+     <div className="container">
        <div className="instructionsDiv">
          <ol className="instructions">
-            <li><strong>Please note</strong>: This data is being queried from the DHS database based on your selections from the dropdown menus. When the data is available, the dropdown menu will become active. There are over 2,900 indicators so please be patient while the indicator dropdown loads.</li>
+            <li><strong>Note</strong>: This data is being queried from the DHS database based on your selections from the dropdown menus. When the data is available, the dropdown menu will become active. There are >2,900 indicators so please be patient while the data loads.</li>
             <li><strong>Select a country</strong> from the first dropdown.</li>
             <li><strong>Select a survey year</strong> from the second dropdown.</li>
             <li><strong>Select an indicator</strong> from the third dropdown.</li>
@@ -348,8 +342,9 @@ saveCSV(){
             <li>To perform a new query, click on the <strong>"new query"</strong> button.</li>
          </ol>
 
-        <button className="queryButton" onClick={(e) => this.handleQuery(e)} >New Query</button>
+        <button className="btn btn-success" onClick={(e) => this.handleQuery(e)} >New Query</button>
         </div>
+        <div className="menus">
          <select className="dropDown" onChange={(e) => this.handleCountry(e)} disabled={this.state.isCountryDisabled}>
           {
             this.state.countries.map((country) =>
@@ -378,10 +373,9 @@ saveCSV(){
             )
           }
         </select>
-        <div className="plotBox" id="canvas" style={divStyle}>
-          <VictoryChart
-            domainPadding={{x: 40, y: 5}}
-            >
+      </div>
+        <div className="plotBox" id="canvas" >
+          <VictoryChart stye={{ padding: 100 }}>
           <VictoryLabel
             text={this.state.selectedCountry}
             x={225} y={5}
@@ -399,16 +393,16 @@ saveCSV(){
           />
           <VictoryAxis
             style={{ axis: { stroke: 'black' },
-              axisLabel: { fontSize: 12, fill: 'black' },
+              axisLabel: { fontSize: 8, fill: 'black' },
               ticks: { stroke: 'black' },
               tickLabels: { fontSize: 12, fill: 'black' }
             }} dependentAxis
           />
           <VictoryAxis
             style={{ axis: { stroke: 'black' },
-              axisLabel: { fontSize: 12 },
+              axisLabel: { fontSize: 8 },
               ticks: { stroke: 'black' },
-              tickLabels: { fontSize: 10, fill: 'black', angle: -45, padding: 10, textAnchor: 'end' }
+              tickLabels: { fontSize: 10, fill: 'black', angle: -20, padding: 10, textAnchor: 'middle' }
             }}
           />
           <VictoryBar
@@ -422,9 +416,9 @@ saveCSV(){
         </div>
       </div>
       <div className="citation">
-      <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
-      <button className="downloadCSVButton" onClick={() => this.saveCSV()}>Save CSV</button>
-        <p>The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
+        <button className="btn btn-primary" onClick={() => this.saveImage()}>Save PNG</button>
+        <button className="btn btn-primary" onClick={() => this.saveCSV()}>Save CSV</button>
+        <p>The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr}]</p>
       </div>
   </div>
       );

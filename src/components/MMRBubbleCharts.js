@@ -95,16 +95,18 @@ class MMRBubbleCharts extends Component {
     let date = new Date();
     let dateStr = date.toISOString().slice(0,10);
     return (
-      <div className="mmrBubbleCharts">
-        <NavBar />
+    <div>
+    <NavBar />
       <div className="container-fluid">
-      <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
-       {
-         this.state.countries.map((country) =>
-          <option key={this.getKey()}>{country ? country : "Select a country"}</option>
-         )
-       }
-      </select>
+        <div className="menus">
+          <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
+           {
+             this.state.countries.map((country) =>
+              <option key={this.getKey()}>{country ? country : "Select a country"}</option>
+             )
+           }
+          </select>
+        </div>
       <div className="plotBox" id="canvas">
           <VictoryChart
             style={{ parent: { maxWidth: "90%" } }}
@@ -128,9 +130,11 @@ class MMRBubbleCharts extends Component {
              />
            </VictoryChart>
           </VictoryChart>
-          <p className="citation">Source: UN Maternal Mortality Estimation Group (2016). <br />Maternal mortality data. [Accessed {dateStr}]</p>
+        </div>
+        <button className="btn btn-primary" onClick={() => this.saveImage()}>Save PNG</button>
+        <div className="citation">
+          <p className="citation">Source: UN Maternal Mortality Estimation Group (2016). <br />Maternal mortality data.[Accessed {dateStr}]</p>
       </div>
-        <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
 </div>
 </div>
     );

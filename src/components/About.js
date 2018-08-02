@@ -8,12 +8,7 @@ class About extends Component {
     return (
   <div>
     <NavBar />
-    <Jumbotron title="Health Data Information"/>
-     <div className="container-fluid">
-       <h1>Health Data Tool</h1>
-       <br />
-       <h3>The Health Data Tool is a simple web app for accessing and downloading public health information from popular development databases.</h3>
-     </div>
+    <Jumbotron className="jumbotron-fluid" title="Health Data Information"/>
   </div>
     );
   }

@@ -98,6 +98,7 @@ class MMRBarCharts extends Component {
     <div>
      <NavBar />
       <div className="container-fluid">
+      <div className="menus">
         <select className="dropDown" onChange={(e) => this.handleCountry(e)}>
            {
              this.state.countries.map((country) =>
@@ -105,6 +106,7 @@ class MMRBarCharts extends Component {
              )
            }
         </select>
+        </div>
           <div className="plotBox" id="canvas">
             <VictoryChart
               domainPadding={{x: 50, y: 5}}
@@ -125,9 +127,11 @@ class MMRBarCharts extends Component {
                 data={this.state.data}
               />
             </VictoryChart>
-            <p className="citation">Source: UN Maternal Mortality Estimation Group (2016). <br />Maternal mortality data. [Accessed {dateStr}]</p>
           </div>
-          <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
+          <button className="btn btn-primary" onClick={() => this.saveImage()}>Save PNG</button>
+          <div className="citation">
+              <p className="citation">Source: UN Maternal Mortality Estimation Group (2016). <br />Maternal mortality data. [Accessed {dateStr}]</p>
+          </div>
         </div>
       </div>
     );

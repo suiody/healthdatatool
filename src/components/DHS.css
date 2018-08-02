@@ -20,20 +20,36 @@
   margin-top: 5rem;
 }
 
+.menus {
+   vertical-align: center;
+   display: inline-block;
+   margin-bottom: 0;
+}
+
+.container {
+  display: inline-block;
+  vertical-align: center;
+  margin: 0 auto 0 auto;
+  max-width: 800px;
+  min-width: 600px;
+}
+
 .graphButton {
   margin: 1rem 1rem;
+}
+
+.plotBox {
+ padding-bottom: 20px;
 }
 
 .citation {
   margin: 0 auto 0 auto;
   max-width: 50%;
-  text-align: center;
+  vertical-align: center;
   font-size: 1rem;
+  padding-bottom: 10rem;
 }
 
-.downloadButton{
+button {
   margin: 1rem 1rem;
-}
-
-.queryButton {
 }

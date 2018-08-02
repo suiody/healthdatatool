@@ -301,9 +301,9 @@ saveCSV(){
                  <li><strong>Select a category</strong> to graph from the fourth dropdown. <br/>To change to a different category, simply select a new category from the dropdown.</li>
                  <li>To perform a new query, click on the <strong>"new query"</strong> button.</li>
               </ol>
-              <button onClick={(e) => this.handleQuery(e)} className="newQueryButton">New Query</button>
+              <button onClick={(e) => this.handleQuery(e)} className="btn btn-success">New Query</button>
             </div>
-
+<div className="menus">
       <select className="dropDown" onChange={(e) => this.handleIndicator(e)}  disabled={this.state.isIndicatorDisabled}>
           {
             this.state.indicators.map((ind) =>
@@ -326,6 +326,7 @@ saveCSV(){
         )
       }
     </select>
+  </div>
     <div className="plotBox" id="canvas">
       <VictoryChart
         domainPadding={{x: 40, y: 5}}
@@ -364,9 +365,9 @@ saveCSV(){
       />
       </VictoryChart>
     </div>
-    <button className="downloadButton" onClick={() => this.saveImage()}>Save PNG</button>
-    <button className="downloadCSVButton" onClick={() => this.saveCSV()}>Save CSV</button>
-    <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr} ]</p>
+    <button className="btn btn-primary" onClick={() => this.saveImage()}>Save PNG</button>
+    <button className="btn btn-primary" onClick={() => this.saveCSV()}>Save CSV</button>
+    <p className="citationDHS">The DHS Program Indicator Data API, The Demographic and Health Surveys (DHS) Program. ICF International. Funded by the United States Agency for International Development (USAID). Available from api.dhsprogram.com. [Accessed {dateStr}]</p>
 
 </div>
 </div>
