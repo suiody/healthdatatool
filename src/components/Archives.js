@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './BarCharts.css';
 import NavBar from './NavBar';
 import './Archives.css';
 import html2canvas from 'html2canvas';
@@ -8,7 +9,7 @@ import { VictoryChart,
   VictoryLabel,
   VictoryAxis
  } from 'victory';
-import './BarCharts.css';
+
 
 class Archives extends Component {
 

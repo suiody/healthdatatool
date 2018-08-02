@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
+import './BubbleChart.css';
 import { VictoryChart,
   VictoryScatter,
   VictoryClipContainer,
   VictoryLabel
  } from 'victory';
-import './BubbleChart.css';
 import html2canvas from 'html2canvas';
 import jsonData from '../data/reformatted_mmr_v2.json';
 import NavBar from './NavBar.js';

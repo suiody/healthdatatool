@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import NavBar from './NavBar';
 import './MaternalMortalityRates.css';
 import bubble from './../images/bubblechart.png';
 import bar from './../images/barchart.png';
+import NavBar from './NavBar';
 import JumbotronTwo from './JumbotronTwo.js';
 
 
