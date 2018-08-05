@@ -24,9 +24,6 @@ class NavBar extends Component {
               <li className="nav-item">
                 <Link className="nav-link" to="/dhs">Demographic Health Survey</Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/archives">Archived Data</Link>
-              </li>
             </ul>
             </div>
           </div>

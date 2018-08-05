@@ -1,4 +1,9 @@
 
+.container {
+  text-align: center;
+  margin: 0 auto 0 auto;
+}
+
 .graphic {
   max-width: 400px;
   min-width: 300px;
@@ -11,6 +16,18 @@ a {
   font-size: 0.7rem;
 }
 
+.titles {
+  display: inline-block;
+  text-align: center;
+}
+
+.summary-tables {
+  margin-top: 4rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  display: inline-block;
+}
+
 .externalLinks {
   text-align: center;
 }
@@ -21,10 +38,16 @@ a {
   box-sizing: border-box;
 }
 
-aside, .col-md-6 {
+aside {
   display: table-cell;
   vertical-align: top;
   height: 100%;
   margin-top: 2rem;
   padding-top: 20px;
+}
+
+.col-md-4 {
+  display: table-cell;
+  vertical-align: top;
+  padding-bottom: 2rem;
 }

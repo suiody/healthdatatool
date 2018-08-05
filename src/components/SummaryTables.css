@@ -1,0 +1,14 @@
+.media {
+  text-align: center;
+}
+
+.table-captions {
+  text-align: center;
+  display: inline-block;
+}
+
+.summary {
+  text-align: center;
+  margin: 0 auto 0 auto;
+  padding-top: 1rem;
+}

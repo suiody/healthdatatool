@@ -4,7 +4,6 @@ import About from './components/About';
 import DHS from './components/DHS';
 import MaternalMortalityRates from './components/MaternalMortalityRates';
 import MMRBubbleCharts from './components/MMRBubbleCharts';
-import MMRBarCharts from './components/MMRBarCharts';
 import Archives from './components/Archives';
 import './App.css';
 
@@ -17,7 +16,6 @@ class App extends Component {
          <Route exact path='/' component={About}/>
          <Route exact path='/dhs' component={DHS}/>
          <Route exact path='/maternalmortalityrates' component={MaternalMortalityRates}/>
-         <Route path='/mmrbarcharts' component={MMRBarCharts}/>
          <Route path='/mmrbubblecharts' component={MMRBubbleCharts}/>
          <Route exact path='/archives' component={Archives}/>
     </div>
